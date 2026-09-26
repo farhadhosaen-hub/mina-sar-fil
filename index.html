@@ -2344,18 +2344,7 @@
             <!-- ناوەڕاست: بسم الله الرحمن الرحیم + دوگمەکانی داگرتن و هاوکاتکردن -->
             <div class="compact-center-group">
                 <div class="compact-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-                <div class="compact-dl-buttons">
-                    <button type="button" class="compact-dl-btn dl-cloud" id="btnHeaderCloudSync" onclick="openCloudSyncModal()" title="هاوکاتکردنی ئۆنلاین (مۆبایل ⇆ کۆمپیوتەر)" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: 1.5px solid #7dd3fc; display: inline-flex; align-items: center; gap: 0.35rem;">
-                        <span>☁️</span> <span id="headerCloudSyncText">هاوکاتکردن</span>
-                        <span id="headerCloudStatusDot" style="width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; display: inline-block; box-shadow: 0 0 6px #fbbf24;" title="دۆخی هەور"></span>
-                    </button>
-                    <button type="button" class="compact-dl-btn dl-mobile" onclick="oneClickMobileDownload()" title="داگرتن بۆ مۆبایل">
-                        <span>📱</span> مۆبایل
-                    </button>
-                    <button type="button" class="compact-dl-btn dl-pc" onclick="oneClickPCDownload()" title="داگرتن بۆ کۆمپیوتەر">
-                        <span>💻</span> کۆمپیوتەر
-                    </button>
-                </div>
+
             </div>
 
             <!-- لای چەپ: کۆی نەوەکان (نێر/مێ) + کات و کەشوهەوا -->
@@ -3603,12 +3592,57 @@
                 members = JSON.parse(JSON.stringify(defaultMembers));
                 saveMembers();
             }
+            // Check IndexedDB asynchronously for any richer data or restored photos
+            loadFromIndexedDB();
+        }
+
+        function loadFromIndexedDB() {
+            if (!window.indexedDB) return;
+            try {
+                const req = indexedDB.open('FamilyTreeDB', 1);
+                req.onsuccess = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('members')) return;
+                    const tx = db.transaction('members', 'readonly');
+                    const store = tx.objectStore('members');
+                    const getAllReq = store.getAll();
+                    getAllReq.onsuccess = () => {
+                        const idbMembers = getAllReq.result;
+                        if (Array.isArray(idbMembers) && idbMembers.length > 0) {
+                            if (idbMembers.length > members.length || idbMembers.some(m => m.photo && !members.find(x => x.id === m.id)?.photo)) {
+                                members = idbMembers;
+                                renderTree();
+                                renderRegTable();
+                                updateTopDescendantsStats();
+                                updateSqlBox();
+                                console.log('✅ Restored complete family members and photos from IndexedDB!');
+                            }
+                        }
+                    };
+                };
+            } catch(err) {
+                console.warn('IndexedDB load error:', err);
+            }
         }
 
         function saveMembers(skipCloud = false) {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.warn('LocalStorage full, stripping heavy photos for localStorage fallback...', e);
+                try {
+                    const lightMembers = members.map(m => {
+                        const copy = {...m};
+                        if (copy.photo && copy.photo.length > 50000) {
+                            delete copy.photo; // Preserve name, relationships, notes even if photos exceed localStorage quota
+                        }
+                        return copy;
+                    });
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(lightMembers));
+                } catch(e2) {
+                    console.error('LocalStorage critical fail:', e2);
+                }
+            }
             syncToIndexedDB();
             updateSqlBox();
             updateTopDescendantsStats();
