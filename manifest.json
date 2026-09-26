@@ -1,0 +1,32 @@
+{
+  "name": "نەوەکانی مینە سەر فیل",
+  "short_name": "نەوەکانی مینە سەر فیل",
+  "description": "ئەپی فەرمیی شەجەرەی بنەماڵە و داتابەیسی نەوەکانی مینە سەر فیل - بەڕێوەبەری داتابەیس: حاجی فەرهاد",
+  "id": "/nawakani-mina-sar-fil",
+  "start_url": "./app_database_mina_sar_fil.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f0fdf4",
+  "theme_color": "#16a34a",
+  "lang": "ckb",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "utilities", "productivity"],
+  "shortcuts": [
+    {
+      "name": "نەوەکانی مینە سەر فیل",
+      "short_name": "نەوەکان",
+      "description": "تۆمارکردن و بینینی نەوەکانی مینە سەر فیل",
+      "url": "./mina_sar_fil.html",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}
