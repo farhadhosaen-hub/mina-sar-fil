@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تۆمارکردنی زانیارییەکانت — خێزانی مینە سەر فیل</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:#0d1117;color:#e6edf3;direction:rtl;min-height:100vh;display:flex;flex-direction:column;}
+
+/* Header */
+.header{background:linear-gradient(135deg,#0a3d0a,#1a5c1a,#2ea043);padding:24px;text-align:center;}
+.header h1{font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:6px;}
+.header p{font-size:.95rem;color:#a8d5a8;}
+
+/* Main */
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;}
+.card{background:#161b22;border:1px solid #30363d;border-radius:16px;width:100%;max-width:560px;overflow:hidden;}
+.card-header{padding:22px 28px;border-bottom:1px solid #30363d;background:rgba(46,160,67,.07);}
+.card-header h2{font-size:1.15rem;font-weight:700;color:#e6edf3;}
+.card-header p{font-size:.85rem;color:#8b949e;margin-top:4px;}
+.card-body{padding:28px;}
+
+/* Steps */
+.steps{display:flex;gap:0;margin-bottom:28px;}
+.step{flex:1;text-align:center;padding:10px 4px;border-bottom:3px solid #30363d;color:#8b949e;font-size:.82rem;font-weight:600;transition:.2s;}
+.step.active{border-color:#2ea043;color:#3fb84e;}
+.step.done{border-color:#2ea043;color:#3fb84e;}
+.step-num{display:block;font-size:1.1rem;margin-bottom:2px;}
+
+/* Form */
+.section{display:none;}
+.section.active{display:block;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:.85rem;color:#8b949e;margin-bottom:7px;font-weight:500;}
+.form-group label span{color:#e74c3c;margin-right:2px;}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:11px 14px;background:#0d1117;border:1px solid #30363d;
+  border-radius:9px;color:#e6edf3;font-family:'Tajawal',sans-serif;font-size:.95rem;
+  outline:none;transition:.2s;
+}
+.form-group input:focus,.form-group textarea:focus{border-color:#2ea043;box-shadow:0 0 0 3px rgba(46,160,67,.12);}
+.form-group select{cursor:pointer;}
+.form-group textarea{resize:vertical;min-height:80px;}
+
+.member-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:320px;overflow-y:auto;padding:4px 2px;}
+.member-option{padding:10px 12px;border:1px solid #30363d;border-radius:9px;cursor:pointer;transition:.2s;background:#0d1117;}
+.member-option:hover{border-color:#2ea043;background:rgba(46,160,67,.07);}
+.member-option.selected{border-color:#2ea043;background:rgba(46,160,67,.15);}
+.member-option .mname{font-size:.9rem;font-weight:600;}
+.member-option .myears{font-size:.75rem;color:#8b949e;margin-top:2px;}
+.member-option .mavatar{font-size:1.4rem;margin-bottom:4px;}
+
+/* Photo */
+.photo-upload{border:2px dashed #30363d;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:.2s;background:#0d1117;}
+.photo-upload:hover{border-color:#2ea043;}
+.photo-preview-wrap{text-align:center;margin-bottom:10px;}
+.photo-preview{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #2ea043;}
+.upload-hint{color:#8b949e;font-size:.85rem;margin-top:6px;}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;margin-top:24px;}
+.btn{padding:11px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;transition:.2s;flex:1;}
+.btn-primary{background:#2ea043;color:#fff;}
+.btn-primary:hover{background:#3fb84e;}
+.btn-secondary{background:#21262d;color:#e6edf3;border:1px solid #30363d;}
+.btn-secondary:hover{background:#30363d;}
+.btn-primary:disabled{background:#1a5c1a;cursor:not-allowed;opacity:.7;}
+
+/* Success */
+.success-screen{text-align:center;padding:40px 20px;}
+.success-icon{font-size:4rem;margin-bottom:16px;}
+.success-screen h2{font-size:1.4rem;font-weight:800;color:#3fb84e;margin-bottom:10px;}
+.success-screen p{color:#8b949e;line-height:1.6;margin-bottom:20px;}
+.back-link{display:inline-block;padding:10px 24px;background:#2ea043;color:#fff;border-radius:9px;text-decoration:none;font-weight:700;margin-top:8px;}
+
+/* Search */
+.search-member{width:100%;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:9px;color:#e6edf3;font-family:'Tajawal',sans-serif;font-size:.9rem;outline:none;margin-bottom:12px;}
+.search-member:focus{border-color:#2ea043;}
+
+/* Loading */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(4px);}
+.loading-overlay.show{display:flex;}
+.spinner{width:44px;height:44px;border:4px solid #30363d;border-top-color:#2ea043;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Info box */
+.info-box{background:rgba(46,160,67,.08);border:1px solid rgba(46,160,67,.25);border-radius:9px;padding:12px 16px;margin-bottom:18px;font-size:.85rem;color:#8b949e;line-height:1.6;}
+.info-box strong{color:#3fb84e;}
+
+/* Tag */
+.new-tag{background:rgba(210,153,34,.15);border:1px solid rgba(210,153,34,.3);color:#d29922;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600;margin-right:8px;}
+
+@media(max-width:480px){.member-select-grid{grid-template-columns:1fr;}.btn-row{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌳 خێزانی مینە سەر فیل</h1>
+  <p>زانیارییەکانت تۆمار بکە — بۆ هەموو ئەندامەکانی خێزان</p>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div class="card-header">
+      <h2>📋 فۆرمی تۆمارکردنی زانیاری</h2>
+      <p>زانیارییەکانت داخڵ بکە — ئۆتۆماتیک دەچێتە داتابەیسەکەوە</p>
+    </div>
+    <div class="card-body">
+
+      <!-- Steps -->
+      <div class="steps">
+        <div class="step active" id="step1"><span class="step-num">١</span>کێتی؟</div>
+        <div class="step" id="step2"><span class="step-num">٢</span>زانیاری</div>
+        <div class="step" id="step3"><span class="step-num">٣</span>وێنە</div>
+      </div>
+
+      <!-- Section 1: Who are you? -->
+      <div class="section active" id="sec1">
+        <div class="info-box">
+          <strong>📌 تکایە:</strong> ناوی خۆت هەڵبژێرە لە لیستی خێزانەکەدا. ئەگەر ناوت تیا نەبوو، <strong>ئەندامی نوێ</strong> هەڵبژێرە.
+        </div>
+        <input type="text" class="search-member" id="searchMember" placeholder="🔍 گەڕان بکە بە ناو..." oninput="filterMemberList()">
+        <div class="member-select-grid" id="memberGrid">
+          <div style="text-align:center;padding:20px;color:#8b949e;grid-column:1/-1;">⏳ بارکردن...</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="goToStep2()" id="nextBtn1" disabled>پێشبچە ←</button>
+        </div>
+      </div>
+
+      <!-- Section 2: Info -->
+      <div class="section" id="sec2">
+        <div class="form-group">
+          <label>ناوی تەواو <span>*</span></label>
+          <input type="text" id="infoName" placeholder="ناوت بنووسە">
+        </div>
+        <div class="form-group">
+          <label>ژمارەی مۆبایل</label>
+          <input type="tel" id="infoPhone" placeholder="07701234567">
+        </div>
+        <div class="form-group">
+          <label>شار / نیشتەجێبوون</label>
+          <input type="text" id="infoCity" placeholder="سلێمانی، هەولێر...">
+        </div>
+        <div class="form-group">
+          <label>ساڵی لەدایکبوون</label>
+          <input type="number" id="infoBirth" placeholder="1990" min="1850" max="2030">
+        </div>
+        <div class="form-group">
+          <label>کار / پیشە</label>
+          <input type="text" id="infoJob" placeholder="مامۆستا، دکتۆر، بازرگان...">
+        </div>
+        <div class="form-group">
+          <label>تێبینی / زانیاری زیاتر</label>
+          <textarea id="infoNotes" placeholder="هەر زانیارێک دەتەوێت زیاد بکەیت..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="goToStep1()">← گەڕانەوە</button>
+          <button class="btn btn-primary" onclick="goToStep3()">پێشبچە ←</button>
+        </div>
+      </div>
+
+      <!-- Section 3: Photo -->
+      <div class="section" id="sec3">
+        <div class="info-box">
+          <strong>📷 وێنە:</strong> وێنەیەک داخڵ بکە (ئارەزوومەندانە). وێنەکەت تەنها لە ناو داتابەیسی خێزانەکەدا دەمێنێتەوە.
+        </div>
+        <div class="photo-upload" onclick="document.getElementById('photoFile').click()">
+          <div class="photo-preview-wrap" id="photoPreviewWrap" style="display:none;">
+            <img class="photo-preview" id="photoPreview" src="" alt="وێنە">
+          </div>
+          <div id="photoIcon">📷</div>
+          <div class="upload-hint" id="photoHint">کلیک بکە بۆ هەڵبژاردنی وێنە<br><small>(ئارەزوومەندانە)</small></div>
+        </div>
+        <input type="file" id="photoFile" accept="image/*" style="display:none;" onchange="handlePhotoSelect()">
+        <div class="btn-row" style="margin-top:20px;">
+          <button class="btn btn-secondary" onclick="goToStep2()">← گەڕانەوە</button>
+          <button class="btn btn-primary" onclick="submitForm()" id="submitBtn">✅ تۆمارکردن</button>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="section" id="secSuccess">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <h2>زانیارییەکانت تۆمارکرا!</h2>
+          <p id="successMsg">زانیارییەکانت بەسەرکەوتوویی چووە ناو داتابەیسی خێزانەکەوە.<br>سوپاس بۆ هاوکاریکردنت!</p>
+          <a href="/" class="back-link">🌳 بچۆ بۆ وێبسایتەکە</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p style="color:#8b949e;font-size:.9rem;">داتا ناردەکرێت...</p>
+</div>
+
+<script>
+// Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyA0XkvgwH4G6ylnTyNWLJDQBdgeqblaPbk",
+  authDomain: "goxlanminasarfil.firebaseapp.com",
+  databaseURL: "https://goxlanminasarfil-default-rtdb.firebaseio.com",
+  projectId: "goxlanminasarfil",
+  storageBucket: "goxlanminasarfil.appspot.com",
+  messagingSenderId: "placeholder",
+  appId: "placeholder"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// State
+let allMembers = [];
+let selectedMemberId = null;
+let selectedIsNew = false;
+let photoData = '';
+let filteredMembers = [];
+
+// Load members from Firebase
+db.ref('family/members').once('value').then(snap => {
+  if (snap.exists()) {
+    allMembers = Object.values(snap.val()).sort((a,b) => (a.firstName||'').localeCompare(b.firstName||''));
+  }
+  renderMemberGrid(allMembers);
+}).catch(() => {
+  renderMemberGrid([]);
+});
+
+function renderMemberGrid(members) {
+  const grid = document.getElementById('memberGrid');
+  let html = members.map(m => {
+    const years = m.birthYear ? `${m.birthYear}${m.deathYear?' — '+m.deathYear:''}` : '';
+    const avatar = m.gender === 'Female' ? '👩' : '👨';
+    return `<div class="member-option" data-id="${m.id}" onclick="selectMember(${m.id}, false, this)">
+      <div class="mavatar">${m.photo ? `<img src="${m.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML='${avatar}'">` : avatar}</div>
+      <div class="mname">${m.firstName||''}</div>
+      ${years ? `<div class="myears">${years}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  // Add "New member" option at end
+  html += `<div class="member-option" data-id="new" onclick="selectMember(null, true, this)" style="border-color:#d29922;">
+    <div class="mavatar">➕</div>
+    <div class="mname"><span class="new-tag">نوێ</span>ناوم تیا نییە</div>
+    <div class="myears">زیادکردنی ئەندامی نوێ</div>
+  </div>`;
+
+  grid.innerHTML = html;
+  filteredMembers = members;
+}
+
+function filterMemberList() {
+  const q = document.getElementById('searchMember').value.toLowerCase().trim();
+  const filtered = q ? allMembers.filter(m => (m.firstName||'').toLowerCase().includes(q) || (m.city||'').toLowerCase().includes(q)) : allMembers;
+  renderMemberGrid(filtered);
+  // Restore selection if still visible
+  if (selectedMemberId) {
+    const el = document.querySelector(`.member-option[data-id="${selectedMemberId}"]`);
+    if (el) el.classList.add('selected');
+  }
+}
+
+function selectMember(id, isNew, el) {
+  document.querySelectorAll('.member-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMemberId = id;
+  selectedIsNew = isNew;
+  document.getElementById('nextBtn1').disabled = false;
+
+  // Pre-fill name if existing member
+  if (id && !isNew) {
+    const m = allMembers.find(x => x.id == id);
+    if (m) {
+      document.getElementById('infoName').value = m.firstName || '';
+      document.getElementById('infoPhone').value = m.phone || '';
+      document.getElementById('infoCity').value = m.city || '';
+      document.getElementById('infoBirth').value = m.birthYear || '';
+      document.getElementById('infoNotes').value = m.notes || '';
+    }
+  } else if (isNew) {
+    document.getElementById('infoName').value = '';
+    document.getElementById('infoPhone').value = '';
+    document.getElementById('infoCity').value = '';
+    document.getElementById('infoBirth').value = '';
+    document.getElementById('infoNotes').value = '';
+  }
+}
+
+// Step navigation
+function goToStep1() { showSection('sec1'); setStep(1); }
+function goToStep2() {
+  if (!selectedMemberId && !selectedIsNew) { alert('تکایە ناوت هەڵبژێرە'); return; }
+  showSection('sec2');
+  setStep(2);
+}
+function goToStep3() {
+  if (!document.getElementById('infoName').value.trim()) { alert('تکایە ناوت بنووسە'); return; }
+  showSection('sec3');
+  setStep(3);
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function setStep(n) {
+  document.querySelectorAll('.step').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if (i < n-1) s.classList.add('done');
+    else if (i === n-1) s.classList.add('active');
+  });
+}
+
+// Photo
+function handlePhotoSelect() {
+  const file = document.getElementById('photoFile').files[0];
+  if (!file) return;
+  // Compress image
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxSize = 400;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h *= maxSize/w; w = maxSize; } }
+      else { if (h > maxSize) { w *= maxSize/h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      photoData = canvas.toDataURL('image/jpeg', 0.75);
+      document.getElementById('photoPreview').src = photoData;
+      document.getElementById('photoPreviewWrap').style.display = 'block';
+      document.getElementById('photoIcon').style.display = 'none';
+      document.getElementById('photoHint').textContent = '✅ وێنە هەڵبژێردرا — دەتوانیت بیگۆڕیت';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Submit
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('loadingOverlay').classList.add('show');
+
+  const name = document.getElementById('infoName').value.trim();
+  const phone = document.getElementById('infoPhone').value.trim();
+  const city = document.getElementById('infoCity').value.trim();
+  const birth = document.getElementById('infoBirth').value;
+  const job = document.getElementById('infoJob').value.trim();
+  const notes = document.getElementById('infoNotes').value.trim();
+  const notesWithJob = job ? (notes ? `${job}\n${notes}` : job) : notes;
+
+  try {
+    if (selectedIsNew) {
+      // Add as new pending member
+      const snap = await db.ref('family/members').once('value');
+      const existing = snap.exists() ? Object.values(snap.val()) : [];
+      const maxId = existing.length ? Math.max(...existing.map(m => m.id||0)) : 32;
+      const newId = maxId + 1;
+      await db.ref(`family/members/${newId}`).set({
+        id: newId,
+        firstName: name,
+        gender: 'Male',
+        fatherId: null, motherId: null,
+        birthYear: birth || '',
+        deathYear: '',
+        isAlive: true,
+        phone, city,
+        notes: notesWithJob,
+        photo: photoData,
+        selfSubmitted: true,
+        submittedAt: Date.now()
+      });
+      showSuccess(name, true);
+    } else {
+      // Update existing member
+      const updates = {};
+      if (name) updates.firstName = name;
+      if (phone) updates.phone = phone;
+      if (city) updates.city = city;
+      if (birth) updates.birthYear = parseInt(birth);
+      if (notesWithJob) updates.notes = notesWithJob;
+      if (photoData) updates.photo = photoData;
+      updates.lastSelfUpdate = Date.now();
+      await db.ref(`family/members/${selectedMemberId}`).update(updates);
+      showSuccess(name, false);
+    }
+  } catch(e) {
+    document.getElementById('loadingOverlay').classList.remove('show');
+    btn.disabled = false;
+    alert('کێشەیەک هەبوو: ' + e.message);
+  }
+}
+
+function showSuccess(name, isNew) {
+  document.getElementById('loadingOverlay').classList.remove('show');
+  showSection('secSuccess');
+  document.getElementById('successMsg').innerHTML = isNew
+    ? `<strong>${name}</strong> بە ئەندامی نوێ زیادکرا بۆ شەجەرەی خێزانەکە! 🎉<br>سوپاس بۆ هاوکاریکردنت.`
+    : `زانیارییەکانی <strong>${name}</strong> بەسەرکەوتوویی نوێکرایەوە! ✅<br>هەموو ئەندامەکانی خێزان دەیبینن.`;
+  document.querySelectorAll('.step').forEach(s => s.classList.add('done'));
+}
+</script>
+</body>
+</html>
