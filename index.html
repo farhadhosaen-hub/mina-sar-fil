@@ -2533,6 +2533,29 @@
         .mobile-swipe-hint { display: none !important; }
     }
 
+
+        /* =========================================================================
+           قوفڵکردنی تەواوەتی بۆ میوانان: کاتێک ئەدمین لۆگین نییە، سەرجەم دوگمەکانی زیادکردن،
+           دەستکاری، وێنە و سڕینەوە بە تەواوی دەشاردرێنەوە
+           ========================================================================= */
+        body:not(.is-admin-mode) .card-actions,
+        body:not(.is-admin-mode) .btn-add-child-quick,
+        body:not(.is-admin-mode) .mobile-floating-add-btn,
+        body:not(.is-admin-mode) #detailEditBtn,
+        body:not(.is-admin-mode) .add-box-card,
+        body:not(.is-admin-mode) button[onclick*="openAddMinaChildModal"],
+        body:not(.is-admin-mode) button[onclick*="openAddChildModal"],
+        body:not(.is-admin-mode) button[onclick*="openEditModal"],
+        body:not(.is-admin-mode) button[onclick*="openAddModal"],
+        body:not(.is-admin-mode) button[onclick*="confirmDeleteMember"] {
+            display: none !important;
+        }
+
+        body:not(.is-admin-mode) .card-photo-box {
+            cursor: default !important;
+            pointer-events: none !important;
+        }
+
 </style>
     <!-- Google Firebase Realtime Database SDK (بۆ هاوکاتکردنی ڕاستەوخۆی مۆبایل ⇆ کۆمپیوتەر) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -4516,6 +4539,12 @@
         } catch(e) {}
 
         function updateAdminUIState() {
+            if (isAdminLoggedIn) {
+                document.body.classList.add('is-admin-mode');
+            } else {
+                document.body.classList.remove('is-admin-mode');
+            }
+    
             const btn = document.getElementById('adminHeaderBtn');
             const icon = document.getElementById('adminHeaderIcon');
             const label = document.getElementById('adminHeaderLabel');
@@ -7236,11 +7265,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
     </div>
 
 
-    <!-- دوگمەی خێرای زیادکردن بۆ مۆبایل (Mobile Floating Add Button) -->
-    <button class="mobile-floating-add-btn" onclick="openAddMemberModal()" title="زیادکردنی ئەندام لە بنەماڵە">
-        <span style="font-size: 1.15rem;">➕</span>
-        <span>زیادکردنی زانیاری</span>
-    </button>
+    <!-- دوگمەی زیادکردنی مۆبایل بە فەرمانی ئەدمین لابراوە -->
 
 </body>
 </html>
