@@ -3811,7 +3811,7 @@
            بەڕێوەبەری ئەدمین، پەسەندکردنی گۆڕانکاری و گەڕاندنەوە بۆ دۆخی سەرەتا
            ========================================================================= */
         const ADMIN_STORAGE_KEY = 'mina_sar_fil_admin_logged_in_v1';
-        const ADMIN_PIN = 'farhad2026';
+        const ADMIN_PIN = '1234';
         let isAdminLoggedIn = false;
         let pendingRequestsList = [];
 
@@ -4336,7 +4336,7 @@
             const err = document.getElementById('adminLoginError');
             const val = input ? input.value.trim() : '';
 
-            if (val.toLowerCase() === 'farhad2026' || val === '1234' || val.toLowerCase() === 'farhad' || val === 'farhad123' || val === '1122' || val === '07701412135') {
+            if (val === '1234') {
                 isAdminLoggedIn = true;
                 try { sessionStorage.setItem(ADMIN_STORAGE_KEY, 'true'); } catch(e) {}
                 if (err) err.style.display = 'none';
@@ -6949,7 +6949,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
                 
                 <div style="max-width: 320px; margin: 0 auto;">
                     <input type="password" id="adminPasswordInput" placeholder="وشەی نهێنی بنووسە..." style="width: 100%; padding: 0.8rem 1rem; border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1rem; text-align: center; outline: none; margin-bottom: 0.5rem;" onkeydown="if(event.key==='Enter') executeAdminLogin()">
-                    <div style="font-size: 0.78rem; color: #64748b; margin-bottom: 1.2rem;">(وشەی نهێنی پێشوەختە: <strong style="color: #16a34a; direction: ltr; display: inline-block;">farhad2026</strong> یان <strong style="color: #16a34a;">1234</strong>)</div>
+                    
                     <button type="button" onclick="executeAdminLogin()" style="width: 100%; background: #16a34a; color: white; border: none; padding: 0.85rem; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer;">
                         چوونەژوورەوە ✅
                     </button>
