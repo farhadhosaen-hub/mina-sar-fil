@@ -3,808 +3,624 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>خێزانی مینە سەر فیل</title>
+<title>نەوەکانی مینە سەر فیل</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:#0d1117;color:#e6edf3;direction:rtl;}
-:root{--green:#2ea043;--gold:#d29922;--dark:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:#0f1923;color:#e8edf2;direction:rtl;min-height:100vh}
+:root{--green:#22c55e;--green-dark:#15803d;--gold:#f59e0b;--card:#1a2535;--border:#2a3a4a;--muted:#64748b;--danger:#ef4444}
 
-/* Header */
-header{background:linear-gradient(135deg,#0a3d0a,#1a5c1a,#2ea043);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(46,160,67,.3);}
-.header-title h1{font-size:1.8rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5);}
-.header-title p{font-size:.9rem;color:#a8d5a8;margin-top:2px;}
-.auth-area{display:flex;align-items:center;gap:12px;}
-.user-info{display:flex;align-items:center;gap:10px;}
-.user-avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);}
-.user-name{font-size:.9rem;color:#fff;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn{padding:8px 18px;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:600;transition:.2s;}
-.btn-login{background:var(--gold);color:#000;}
-.btn-login:hover{background:#e6b020;}
-.btn-logout{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
-.btn-logout:hover{background:rgba(255,255,255,.25);}
-.btn-primary{background:var(--green);color:#fff;}
-.btn-primary:hover{background:#3fb84e;}
-.btn-danger{background:#da3633;color:#fff;}
-.btn-danger:hover{background:#e74c3c;}
-.btn-secondary{background:var(--border);color:var(--text);}
-.btn-secondary:hover{background:#40464f;}
+/* ===== HEADER ===== */
+.site-header{background:linear-gradient(160deg,#0a1f0a,#0d2e1a,#0f3d20);padding:28px 24px 24px;text-align:center;border-bottom:1px solid rgba(34,197,94,.2);box-shadow:0 4px 30px rgba(0,0,0,.5)}
+.site-header h1{font-size:2rem;font-weight:900;color:#fff;letter-spacing:.5px}
+.site-header h1 span{color:var(--gold)}
+.site-header p{color:#86efac;margin-top:6px;font-size:.95rem}
+.header-stats{display:flex;justify-content:center;gap:24px;margin-top:18px;flex-wrap:wrap}
+.hstat{text-align:center;background:rgba(255,255,255,.06);padding:10px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+.hstat-num{font-size:1.4rem;font-weight:800;color:var(--green)}
+.hstat-lbl{font-size:.72rem;color:#86efac;margin-top:2px}
 
-/* Search & Filters */
-.controls{padding:20px 24px;background:#010409;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
-.search-box{flex:1;min-width:220px;position:relative;}
-.search-box input{width:100%;padding:10px 16px 10px 40px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:.95rem;outline:none;transition:.2s;}
-.search-box input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,160,67,.15);}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1rem;}
-.gen-filters{display:flex;flex-wrap:wrap;gap:8px;}
-.gen-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;transition:.2s;}
-.gen-btn:hover,.gen-btn.active{background:var(--green);border-color:var(--green);color:#fff;}
+/* ===== TOOLBAR ===== */
+.toolbar{background:#111e2b;padding:14px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:blur(10px)}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap input{width:100%;padding:10px 14px 10px 42px;background:#0f1923;border:1px solid var(--border);border-radius:10px;color:#e8edf2;font-family:'Tajawal',sans-serif;font-size:.9rem;outline:none;transition:.2s}
+.search-wrap input:focus{border-color:var(--green)}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--muted)}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.82rem;transition:.2s;white-space:nowrap}
+.fbtn:hover,.fbtn.on{background:var(--green);border-color:var(--green);color:#fff}
+.add-btn{padding:9px 18px;background:var(--green);border:none;border-radius:10px;color:#fff;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:.2s}
+.add-btn:hover{background:#16a34a}
 
-/* Stats */
-.stats{display:flex;gap:16px;padding:16px 24px;background:#010409;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;display:flex;align-items:center;gap:12px;min-width:120px;}
-.stat-icon{font-size:1.5rem;}
-.stat-info{line-height:1.3;}
-.stat-num{font-size:1.3rem;font-weight:700;color:var(--green);}
-.stat-label{font-size:.78rem;color:var(--muted);}
+/* ===== GRID ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:.25s;position:relative}
+.card:hover{border-color:var(--green);transform:translateY(-4px);box-shadow:0 12px 40px rgba(34,197,94,.15)}
+.card-stripe{height:3px;background:linear-gradient(90deg,var(--green),var(--gold))}
+.card-body{padding:18px}
+.card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar{width:58px;height:58px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;overflow:hidden;border:2px solid var(--border)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.card-info h3{font-size:.95rem;font-weight:700;line-height:1.3;color:#e8edf2}
+.card-info .years{font-size:.78rem;color:var(--muted);margin-top:3px}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.7rem;font-weight:600;margin-top:4px}
+.alive{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.dead{background:rgba(100,116,139,.1);color:var(--muted);border:1px solid var(--border)}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);margin-top:2px}
+.city{font-size:.78rem;color:var(--muted)}
+.gen-tag{font-size:.7rem;padding:3px 9px;border-radius:10px;background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2)}
+.no-photo-edit{position:absolute;top:10px;left:10px;width:26px;height:26px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;opacity:0;transition:.2s}
+.card:hover .no-photo-edit{opacity:1}
 
-/* Member Grid */
-.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:24px;}
-.member-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:.25s;position:relative;overflow:hidden;}
-.member-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));}
-.member-card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 30px rgba(46,160,67,.2);}
-.card-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.member-photo{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;overflow:hidden;}
-.member-photo img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.member-info h3{font-size:1rem;font-weight:700;color:var(--text);line-height:1.3;}
-.member-info .years{font-size:.82rem;color:var(--muted);margin-top:3px;}
-.alive-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;margin-top:4px;}
-.alive{background:rgba(46,160,67,.2);color:#3fb84e;border:1px solid rgba(46,160,67,.3);}
-.deceased{background:rgba(139,148,158,.1);color:var(--muted);border:1px solid var(--border);}
-.card-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
-.card-city{font-size:.82rem;color:var(--muted);}
-.gen-badge{padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:600;background:rgba(210,153,34,.15);color:var(--gold);border:1px solid rgba(210,153,34,.3);}
+/* ===== MODAL ===== */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(6px)}
+.overlay.open{display:flex}
+.modal{background:#1a2535;border:1px solid var(--border);border-radius:18px;width:100%;max-width:580px;max-height:94vh;overflow-y:auto;position:relative;animation:popIn .25s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.mhead{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#1a2535;z-index:5}
+.mhead h2{font-size:1.1rem;font-weight:700}
+.mclose{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s}
+.mclose:hover{background:var(--border);color:#e8edf2}
+.mbody{padding:22px}
 
-/* Modal Overlay */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;}
-.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:2;}
-.modal-header h2{font-size:1.2rem;font-weight:700;}
-.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 8px;border-radius:6px;}
-.modal-close:hover{color:var(--text);background:var(--border);}
-.modal-body{padding:24px;}
+/* Detail view */
+.det-photo{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--border);border:3px solid var(--green);overflow:hidden}
+.det-photo img{width:100%;height:100%;object-fit:cover}
+.det-name{text-align:center;font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.det-sub{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.ibox{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.ibox-lbl{font-size:.72rem;color:var(--muted);margin-bottom:3px}
+.ibox-val{font-size:.9rem;font-weight:500}
+.ibox-val a{color:var(--green);cursor:pointer;text-decoration:none}
+.ibox-val a:hover{text-decoration:underline}
+.notes-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:14px;line-height:1.7;font-size:.9rem}
+.children-wrap{margin-bottom:16px}
+.children-wrap h4{font-size:.82rem;color:var(--muted);margin-bottom:8px}
+.child-pill{display:inline-block;padding:4px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;font-size:.82rem;color:var(--green);margin:3px;cursor:pointer}
+.child-pill:hover{background:rgba(34,197,94,.2)}
+.det-actions{display:flex;gap:10px;margin-bottom:0}
 
-/* Detail Modal */
-.detail-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--green);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:var(--dark);overflow:hidden;}
-.detail-photo img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.detail-name{text-align:center;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
-.detail-years{text-align:center;color:var(--muted);font-size:.95rem;margin-bottom:20px;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-.info-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
-.info-label{font-size:.75rem;color:var(--muted);margin-bottom:4px;}
-.info-value{font-size:.95rem;font-weight:500;}
-.info-value a{color:var(--green);text-decoration:none;cursor:pointer;}
-.info-value a:hover{text-decoration:underline;}
-.notes-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px;}
-.notes-box .info-label{margin-bottom:6px;}
-.children-list{margin-bottom:20px;}
-.children-list h4{font-size:.9rem;color:var(--muted);margin-bottom:10px;}
-.child-chip{display:inline-block;padding:4px 12px;background:rgba(46,160,67,.1);border:1px solid rgba(46,160,67,.3);border-radius:20px;font-size:.85rem;color:var(--green);margin:3px;cursor:pointer;}
-.child-chip:hover{background:rgba(46,160,67,.25);}
-.detail-actions{display:flex;gap:10px;margin-bottom:24px;}
-
-/* Comments */
-.comments-section h4{font-size:1rem;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.comment-item{display:flex;gap:12px;margin-bottom:16px;animation:fadeIn .3s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.comment-avatar{width:36px;height:36px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0;overflow:hidden;}
-.comment-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.comment-bubble{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;flex:1;}
-.comment-meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
-.comment-name{font-size:.85rem;font-weight:600;}
-.comment-time{font-size:.75rem;color:var(--muted);}
-.comment-text{font-size:.9rem;line-height:1.5;}
-.comment-form{display:flex;gap:10px;margin-top:16px;align-items:flex-end;}
-.comment-form textarea{flex:1;padding:10px 14px;background:var(--dark);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:.9rem;resize:none;min-height:44px;max-height:120px;outline:none;transition:.2s;}
-.comment-form textarea:focus{border-color:var(--green);}
-.no-comments{text-align:center;color:var(--muted);font-size:.9rem;padding:20px 0;}
-.login-prompt{text-align:center;color:var(--muted);font-size:.85rem;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;margin-top:12px;}
-
-/* Form Styles */
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;background:var(--dark);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:.95rem;outline:none;transition:.2s;}
-.form-group input:focus,.form-group select,.form-group textarea:focus{border-color:var(--green);}
-.form-group select{cursor:pointer;}
-.form-group textarea{resize:vertical;min-height:80px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.photo-upload{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.2s;}
-.photo-upload:hover{border-color:var(--green);}
-.photo-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 8px;display:block;}
-.form-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
-.toggle-group{display:flex;gap:10px;}
-.toggle-option{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;transition:.2s;background:transparent;color:var(--muted);}
-.toggle-option.selected{background:var(--green);border-color:var(--green);color:#fff;}
-
-/* FAB */
-.fab{position:fixed;bottom:28px;left:28px;width:56px;height:56px;border-radius:50%;background:var(--green);border:none;color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(46,160,67,.4);transition:.2s;z-index:100;display:none;}
-.fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(46,160,67,.5);}
-.fab.show{display:flex;align-items:center;justify-content:center;}
+/* Form */
+.fgroup{margin-bottom:15px}
+.fgroup label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+.fgroup input,.fgroup select,.fgroup textarea{width:100%;padding:10px 13px;background:#0f1923;border:1px solid var(--border);border-radius:9px;color:#e8edf2;font-family:'Tajawal',sans-serif;font-size:.9rem;outline:none;transition:.2s}
+.fgroup input:focus,.fgroup textarea:focus{border-color:var(--green)}
+.fgroup select{cursor:pointer}
+.fgroup textarea{resize:vertical;min-height:80px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.photo-drop{border:2px dashed var(--border);border-radius:12px;padding:22px;text-align:center;cursor:pointer;transition:.2s;background:#0f1923}
+.photo-drop:hover{border-color:var(--green);background:rgba(34,197,94,.04)}
+.photo-drop-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--green);margin:0 auto 8px;display:block}
+.photo-hint{color:var(--muted);font-size:.82rem;margin-top:4px}
+.toggle-row{display:flex;gap:8px}
+.tog{flex:1;padding:9px;border:1px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.85rem;background:#0f1923;color:var(--muted);transition:.2s}
+.tog.on{background:var(--green);border-color:var(--green);color:#fff}
+.form-footer{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+.btn{padding:10px 20px;border:none;border-radius:9px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:700;transition:.2s}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{background:#16a34a}
+.btn-s{background:var(--border);color:#e8edf2}.btn-s:hover{background:#3a4a5a}
+.btn-d{background:var(--danger);color:#fff}.btn-d:hover{background:#dc2626}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 
 /* Toast */
-.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-.toast{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:.9rem;min-width:240px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.5);animation:slideDown .3s ease;}
-@keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
-.toast.success{border-color:var(--green);color:#3fb84e;}
-.toast.error{border-color:#da3633;color:#f85149;}
+#toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#1a2535;border:1px solid var(--border);padding:11px 22px;border-radius:10px;font-size:.88rem;z-index:9999;display:none;animation:toastIn .25s ease;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+@keyframes toastIn{from{opacity:0;top:4px}to{opacity:1;top:18px}}
+#toast.ok{border-color:var(--green);color:var(--green)}
+#toast.err{border-color:var(--danger);color:var(--danger)}
+
+/* Empty */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .ei{font-size:3rem;margin-bottom:12px}
 
 /* Loading */
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px;}
-.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+.loading{text-align:center;padding:70px 20px}
+.spin{width:42px;height:42px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Empty state */
-.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
-.empty-state .icon{font-size:3rem;margin-bottom:12px;}
+/* Sync badge */
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle}
+.sync-ok{background:var(--green)}.sync-off{background:var(--muted)}
 
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:var(--dark);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--muted);}
-
-@media(max-width:600px){
-  header{flex-direction:column;gap:14px;text-align:center;}
-  .header-title h1{font-size:1.4rem;}
-  .info-grid{grid-template-columns:1fr;}
-  .form-row{grid-template-columns:1fr;}
-  .members-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));padding:14px;}
+@media(max-width:560px){
+  .info-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));padding:12px;gap:10px}
+  .site-header h1{font-size:1.5rem}
+  .toolbar{padding:10px 12px}
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="header-title">
-    <h1>🌳 خێزانی مینە سەر فیل</h1>
-    <p>شەجەرەی بنەماڵە — گۆخلان</p>
+<!-- HEADER -->
+<div class="site-header">
+  <h1>🌳 نەوەکانی <span>مینە سەر فیل</span></h1>
+  <p>شەجەرەی بنەماڵەی گۆخلان <span id="syncStatus" title="Firebase">• <span class="sync-dot sync-off" id="syncDot"></span></span></p>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-num" id="sTotal">٠</div><div class="hstat-lbl">کۆی ئەندام</div></div>
+    <div class="hstat"><div class="hstat-num" id="sAlive">٠</div><div class="hstat-lbl">زیندوو</div></div>
+    <div class="hstat"><div class="hstat-num" id="sCities">٠</div><div class="hstat-lbl">شار</div></div>
+    <div class="hstat"><div class="hstat-num" id="sGens">٠</div><div class="hstat-lbl">نەوە</div></div>
   </div>
-  <div class="auth-area">
-    <div class="user-info" id="userInfo" style="display:none;">
-      <img class="user-avatar" id="userAvatar" src="" alt="">
-      <span class="user-name" id="userName"></span>
-      <button class="btn btn-logout" onclick="signOut()">دەرچوون</button>
-    </div>
-    <button class="btn btn-login" id="loginBtn" onclick="signInWithGoogle()">
-      🔐 چوونەژوورەوە بە Google
-    </button>
-  </div>
-</header>
+</div>
 
-<!-- Controls -->
-<div class="controls">
-  <div class="search-box">
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="گەڕان بکە بە ناو..." oninput="filterMembers()">
+    <input type="text" id="searchQ" placeholder="گەڕان بکە بە ناو، شار..." oninput="doFilter()">
   </div>
-  <div class="gen-filters" id="genFilters">
-    <button class="gen-btn active" data-gen="all" onclick="setGenFilter(this,'all')">هەموو</button>
+  <div class="filter-btns" id="filterBtns">
+    <button class="fbtn on" data-g="all" onclick="setGen(this,'all')">هەموو</button>
   </div>
+  <button class="add-btn" onclick="openAdd()">➕ ئەندامی نوێ</button>
 </div>
 
-<!-- Stats -->
-<div class="stats">
-  <div class="stat-card"><span class="stat-icon">👥</span><div class="stat-info"><div class="stat-num" id="totalCount">0</div><div class="stat-label">کۆی ئەندامەکان</div></div></div>
-  <div class="stat-card"><span class="stat-icon">✅</span><div class="stat-info"><div class="stat-num" id="aliveCount">0</div><div class="stat-label">زیندوو</div></div></div>
-  <div class="stat-card"><span class="stat-icon">🏙️</span><div class="stat-info"><div class="stat-num" id="cityCount">0</div><div class="stat-label">شار</div></div></div>
-  <div class="stat-card"><span class="stat-icon">🌿</span><div class="stat-info"><div class="stat-num" id="genCount">0</div><div class="stat-label">نەوە</div></div></div>
-</div>
+<!-- GRID -->
+<div id="grid"><div class="loading"><div class="spin"></div><p style="color:var(--muted)">بارکردن...</p></div></div>
 
-<!-- Members Grid -->
-<div id="membersContainer">
-  <div class="loading">
-    <div class="spinner"></div>
-    <p style="color:var(--muted)">داتا باردەکرێت...</p>
-  </div>
-</div>
-
-<!-- FAB Add Member -->
-<button class="fab" id="fabAdd" onclick="showAddModal()" title="زیادکردنی ئەندامی نوێ">+</button>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
+<!-- Toast -->
+<div id="toast"></div>
 
 <!-- ===== DETAIL MODAL ===== -->
-<div class="modal-overlay" id="detailModal">
+<div class="overlay" id="detModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2 id="detailModalTitle">زانیاری ئەندام</h2>
-      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <div class="mhead">
+      <h2 id="detTitle">زانیاری ئەندام</h2>
+      <button class="mclose" onclick="closeModal('detModal')">✕</button>
     </div>
-    <div class="modal-body" id="detailModalBody"></div>
+    <div class="mbody" id="detBody"></div>
   </div>
 </div>
 
 <!-- ===== EDIT MODAL ===== -->
-<div class="modal-overlay" id="editModal">
+<div class="overlay" id="editModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>✏️ گۆڕانکاریکردنی ئەندام</h2>
-      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    <div class="mhead">
+      <h2 id="editTitle">✏️ گۆڕانکاری</h2>
+      <button class="mclose" onclick="closeModal('editModal')">✕</button>
     </div>
-    <div class="modal-body">
-      <input type="hidden" id="editMemberId">
-      <div class="form-group">
-        <label>ناو</label>
-        <input type="text" id="editName" placeholder="ناوی ئەندام">
+    <div class="mbody">
+      <input type="hidden" id="eId">
+      <div class="fgroup"><label>ناوی تەواو *</label><input type="text" id="eName" placeholder="ناو..."></div>
+      <div class="frow">
+        <div class="fgroup"><label>ساڵی لەدایکبوون</label><input type="number" id="eBirth" placeholder="١٩٨٠"></div>
+        <div class="fgroup"><label>ساڵی مردن</label><input type="number" id="eDeath" placeholder="(ئەگەر مردوو بوو)"></div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ساڵی لەدایکبوون</label>
-          <input type="number" id="editBirth" placeholder="١٩٨٠">
-        </div>
-        <div class="form-group">
-          <label>ساڵی مردن</label>
-          <input type="number" id="editDeath" placeholder="٢٠٢٠">
+      <div class="fgroup"><label>باری ژیان</label>
+        <div class="toggle-row">
+          <button class="tog on" id="eAliveBtn" onclick="setAlive(true)">✅ زیندوو</button>
+          <button class="tog" id="eDeadBtn" onclick="setAlive(false)">💀 مردوو</button>
         </div>
       </div>
-      <div class="form-group">
-        <label>باری ژیان</label>
-        <div class="toggle-group">
-          <button class="toggle-option selected" id="editAliveBtn" onclick="setAliveToggle(true)">✅ زیندوو</button>
-          <button class="toggle-option" id="editDeadBtn" onclick="setAliveToggle(false)">💀 مردوو</button>
+      <div class="frow">
+        <div class="fgroup"><label>شار</label><input type="text" id="eCity" placeholder="سلێمانی..."></div>
+        <div class="fgroup"><label>مۆبایل</label><input type="text" id="ePhone" placeholder="07701234567"></div>
+      </div>
+      <div class="fgroup"><label>کار / پیشە</label><input type="text" id="eJob" placeholder="مامۆستا، دکتۆر..."></div>
+      <div class="fgroup"><label>تێبینی</label><textarea id="eNotes" placeholder="هەر زانیارێک..."></textarea></div>
+      <div class="fgroup"><label>وێنە</label>
+        <div class="photo-drop" onclick="document.getElementById('ePhotoFile').click()">
+          <img id="ePhotoPreview" class="photo-drop-preview" src="" style="display:none">
+          <div id="ePhotoIcon">📷</div>
+          <div class="photo-hint" id="ePhotoHint">کلیک بکە بۆ هەڵبژاردنی وێنە</div>
         </div>
+        <input type="file" id="ePhotoFile" accept="image/*" style="display:none" onchange="loadPhoto('e')">
       </div>
-      <div class="form-group">
-        <label>شار / نیشتەجێبوون</label>
-        <input type="text" id="editCity" placeholder="سلێمانی">
-      </div>
-      <div class="form-group">
-        <label>ژمارەی مۆبایل</label>
-        <input type="text" id="editPhone" placeholder="07701234567">
-      </div>
-      <div class="form-group">
-        <label>تێبینی</label>
-        <textarea id="editNotes" placeholder="زانیاری زیاتر..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>وێنە</label>
-        <div class="photo-upload" onclick="document.getElementById('editPhotoInput').click()">
-          <img class="photo-preview" id="editPhotoPreview" src="" alt="" style="display:none;">
-          <div id="editPhotoPlaceholder">📷 کلیک بکە بۆ هەڵبژاردنی وێنە</div>
-        </div>
-        <input type="file" id="editPhotoInput" accept="image/*" style="display:none;" onchange="previewPhoto('edit')">
-      </div>
-      <div class="form-actions">
-        <button class="btn btn-secondary" onclick="closeModal('editModal')">هەڵوەشاندنەوە</button>
-        <button class="btn btn-primary" onclick="saveMemberEdit()">💾 تۆمارکردن</button>
+      <div class="form-footer">
+        <button class="btn btn-s" onclick="closeModal('editModal')">هەڵوەشاندنەوە</button>
+        <button class="btn btn-g" id="eSaveBtn" onclick="saveEdit()">💾 تۆمارکردن</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ===== ADD MODAL ===== -->
-<div class="modal-overlay" id="addModal">
+<div class="overlay" id="addModal">
   <div class="modal">
-    <div class="modal-header">
+    <div class="mhead">
       <h2>➕ زیادکردنی ئەندامی نوێ</h2>
-      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+      <button class="mclose" onclick="closeModal('addModal')">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>ناو *</label>
-        <input type="text" id="addName" placeholder="ناوی ئەندام">
-      </div>
-      <div class="form-group">
-        <label>ڕەگەز</label>
-        <div class="toggle-group">
-          <button class="toggle-option selected" id="addMaleBtn" onclick="setGenderToggle('Male')">👨 کوڕ / پیاو</button>
-          <button class="toggle-option" id="addFemaleBtn" onclick="setGenderToggle('Female')">👩 کچ / ژن</button>
+    <div class="mbody">
+      <div class="fgroup"><label>ناوی تەواو *</label><input type="text" id="aName" placeholder="ناوی ئەندام..."></div>
+      <div class="fgroup"><label>ڕەگەز</label>
+        <div class="toggle-row">
+          <button class="tog on" id="aMaleBtn" onclick="setGender('Male')">👨 کوڕ / پیاو</button>
+          <button class="tog" id="aFemaleBtn" onclick="setGender('Female')">👩 کچ / ژن</button>
         </div>
       </div>
-      <input type="hidden" id="addGender" value="Male">
-      <div class="form-group">
-        <label>باوک</label>
-        <select id="addFatherId">
-          <option value="">— باوک هەڵبژێرە —</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>دایک</label>
-        <select id="addMotherId">
-          <option value="">— دایک هەڵبژێرە —</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ساڵی لەدایکبوون</label>
-          <input type="number" id="addBirth" placeholder="١٩٩٠">
+      <input type="hidden" id="aGender" value="Male">
+      <div class="frow">
+        <div class="fgroup"><label>باوک</label>
+          <select id="aFather"><option value="">— هەڵبژێرە —</option></select>
         </div>
-        <div class="form-group">
-          <label>شار</label>
-          <input type="text" id="addCity" placeholder="سلێمانی">
+        <div class="fgroup"><label>دایک</label>
+          <select id="aMother"><option value="">— هەڵبژێرە —</option></select>
         </div>
       </div>
-      <div class="form-group">
-        <label>تێبینی</label>
-        <textarea id="addNotes" placeholder="زانیاری زیاتر..."></textarea>
+      <div class="frow">
+        <div class="fgroup"><label>ساڵی لەدایکبوون</label><input type="number" id="aBirth" placeholder="١٩٩٠"></div>
+        <div class="fgroup"><label>شار</label><input type="text" id="aCity" placeholder="سلێمانی..."></div>
       </div>
-      <div class="form-group">
-        <label>وێنە</label>
-        <div class="photo-upload" onclick="document.getElementById('addPhotoInput').click()">
-          <img class="photo-preview" id="addPhotoPreview" src="" alt="" style="display:none;">
-          <div id="addPhotoPlaceholder">📷 کلیک بکە بۆ هەڵبژاردنی وێنە</div>
+      <div class="fgroup"><label>مۆبایل</label><input type="text" id="aPhone" placeholder="07701234567"></div>
+      <div class="fgroup"><label>کار / پیشە</label><input type="text" id="aJob" placeholder="مامۆستا، دکتۆر..."></div>
+      <div class="fgroup"><label>تێبینی</label><textarea id="aNotes" placeholder="زانیاری زیاتر..."></textarea></div>
+      <div class="fgroup"><label>وێنە</label>
+        <div class="photo-drop" onclick="document.getElementById('aPhotoFile').click()">
+          <img id="aPhotoPreview" class="photo-drop-preview" src="" style="display:none">
+          <div id="aPhotoIcon">📷</div>
+          <div class="photo-hint">کلیک بکە بۆ هەڵبژاردنی وێنە <small>(ئارەزوومەندانە)</small></div>
         </div>
-        <input type="file" id="addPhotoInput" accept="image/*" style="display:none;" onchange="previewPhoto('add')">
+        <input type="file" id="aPhotoFile" accept="image/*" style="display:none" onchange="loadPhoto('a')">
       </div>
-      <input type="hidden" id="addPhotoData" value="">
-      <div class="form-actions">
-        <button class="btn btn-secondary" onclick="closeModal('addModal')">هەڵوەشاندنەوە</button>
-        <button class="btn btn-primary" onclick="saveNewMember()">✅ زیادکردن</button>
+      <div class="form-footer">
+        <button class="btn btn-s" onclick="closeModal('addModal')">هەڵوەشاندنەوە</button>
+        <button class="btn btn-g" onclick="saveAdd()">✅ زیادکردن</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ==============================
-// Firebase Config
-// ==============================
-const firebaseConfig = {
-  apiKey: "AIzaSyA0XkvgwH4G6ylnTyNWLJDQBdgeqblaPbk",
-  authDomain: "goxlanminasarfil.firebaseapp.com",
-  databaseURL: "https://goxlanminasarfil-default-rtdb.firebaseio.com",
-  projectId: "goxlanminasarfil",
-  storageBucket: "goxlanminasarfil.appspot.com",
-  messagingSenderId: "placeholder",
-  appId: "placeholder"
+// ─── Firebase ───────────────────────────────────────────────
+const FB_CONFIG = {
+  apiKey:"AIzaSyA0XkvgwH4G6ylnTyNWLJDQBdgeqblaPbk",
+  authDomain:"goxlanminasarfil.firebaseapp.com",
+  databaseURL:"https://goxlanminasarfil-default-rtdb.firebaseio.com",
+  projectId:"goxlanminasarfil",
+  storageBucket:"goxlanminasarfil.appspot.com",
+  messagingSenderId:"placeholder",
+  appId:"placeholder"
 };
+let db=null, fbOk=false;
+try{ firebase.initializeApp(FB_CONFIG); db=firebase.database(); }catch(e){}
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+// ─── Seed Data — 32 Members ─────────────────────────────────
+const SEED=[
+  {id:1,firstName:"مینە سەر فیل",gender:"Male",fatherId:null,motherId:null,birthYear:1870,deathYear:1950,isAlive:false,phone:"",city:"گۆخلان",job:"",notes:"باپیرە گەورەی بەڕێز مینە سەر فیل، بنچینەی بنەماڵە",photo:""},
+  {id:2,firstName:"حسن مينة سةرفيل",gender:"Male",fatherId:1,motherId:null,birthYear:1915,deathYear:1986,isAlive:false,phone:"",city:"كوخلان",job:"كوتال فروش",notes:"كوتال فروش",photo:""},
+  {id:3,firstName:"كةرةم مينة سةر فيل",gender:"Male",fatherId:1,motherId:null,birthYear:1925,deathYear:null,isAlive:false,phone:"",city:"كوخلان",job:"",notes:"كامةندى نةخوش خانة",photo:""},
+  {id:4,firstName:"حمةرةش",gender:"Male",fatherId:1,motherId:null,birthYear:1930,deathYear:1975,isAlive:false,phone:"",city:"ايران / كيكن",job:"جوتيار",notes:"جوتيار",photo:""},
+  {id:5,firstName:"حسين مينة سةرفيل",gender:"Male",fatherId:1,motherId:null,birthYear:1935,deathYear:2016,isAlive:false,phone:"",city:"كوخلان",job:"بيشمةركة",notes:"بيشمةركة",photo:""},
+  {id:6,firstName:"عبدالله مينة سةرفيل",gender:"Male",fatherId:1,motherId:null,birthYear:1939,deathYear:2018,isAlive:false,phone:"",city:"كوخلان",job:"جوتيار",notes:"جوتيار",photo:""},
+  {id:7,firstName:"ستجان مينة سةرفيل",gender:"Female",fatherId:1,motherId:null,birthYear:1945,deathYear:1983,isAlive:false,phone:"",city:"تةيمةز",job:"",notes:"",photo:""},
+  {id:8,firstName:"امينة مينة سةرفيل",gender:"Female",fatherId:1,motherId:null,birthYear:1948,deathYear:2012,isAlive:false,phone:"",city:"بيستان",job:"",notes:"",photo:""},
+  {id:9,firstName:"ريحانة مينة سةرفيل",gender:"Female",fatherId:1,motherId:null,birthYear:1950,deathYear:2020,isAlive:false,phone:"",city:"شارى بانة",job:"",notes:"",photo:""},
+  {id:10,firstName:"خليل",gender:"Male",fatherId:6,motherId:null,birthYear:null,deathYear:null,isAlive:true,phone:"",city:"كوخلان",job:"",notes:"",photo:""},
+  {id:11,firstName:"اسماعيل",gender:"Male",fatherId:6,motherId:null,birthYear:null,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:12,firstName:"فرهاد",gender:"Male",fatherId:5,motherId:null,birthYear:1970,deathYear:null,isAlive:true,phone:"07701412135",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:13,firstName:"زوراب",gender:"Male",fatherId:5,motherId:null,birthYear:1978,deathYear:null,isAlive:true,phone:"07701451430",city:"كوخلان",job:"",notes:"",photo:""},
+  {id:14,firstName:"سرحد",gender:"Male",fatherId:5,motherId:null,birthYear:1973,deathYear:null,isAlive:true,phone:"0772",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:15,firstName:"شيرين",gender:"Female",fatherId:5,motherId:null,birthYear:1972,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:16,firstName:"خالد",gender:"Male",fatherId:6,motherId:null,birthYear:1980,deathYear:null,isAlive:true,phone:"07719484112",city:"بينجوين",job:"كامةندى تةندروستى",notes:"كامةندى تةندروستى",photo:""},
+  {id:17,firstName:"كةلاويز",gender:"Female",fatherId:6,motherId:null,birthYear:1979,deathYear:null,isAlive:true,phone:"",city:"بينجوين",job:"",notes:"",photo:""},
+  {id:18,firstName:"بةيان",gender:"Female",fatherId:6,motherId:null,birthYear:1990,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:19,firstName:"صباحة",gender:"Female",fatherId:null,motherId:8,birthYear:1985,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:20,firstName:"زينب",gender:"Female",fatherId:null,motherId:9,birthYear:1970,deathYear:null,isAlive:true,phone:"",city:"شارى بانة",job:"",notes:"",photo:""},
+  {id:21,firstName:"عدنان",gender:"Male",fatherId:null,motherId:9,birthYear:1970,deathYear:null,isAlive:true,phone:"",city:"شارى بانة",job:"",notes:"",photo:""},
+  {id:22,firstName:"دلسوز",gender:"Female",fatherId:null,motherId:9,birthYear:1980,deathYear:null,isAlive:true,phone:"",city:"شارى بانة",job:"",notes:"",photo:""},
+  {id:23,firstName:"غريب",gender:"Male",fatherId:3,motherId:null,birthYear:1960,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:24,firstName:"توبا",gender:"Female",fatherId:3,motherId:null,birthYear:1962,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:25,firstName:"عبدالله",gender:"Male",fatherId:3,motherId:null,birthYear:1964,deathYear:null,isAlive:true,phone:"",city:"كوخلان",job:"",notes:"",photo:""},
+  {id:26,firstName:"على",gender:"Male",fatherId:3,motherId:null,birthYear:1968,deathYear:null,isAlive:true,phone:"",city:"كوخلان",job:"",notes:"",photo:""},
+  {id:27,firstName:"عسمان",gender:"Male",fatherId:3,motherId:null,birthYear:1970,deathYear:null,isAlive:true,phone:"",city:"",job:"",notes:"",photo:""},
+  {id:28,firstName:"روناك",gender:"Female",fatherId:3,motherId:null,birthYear:1970,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""},
+  {id:29,firstName:"هيمن",gender:"Male",fatherId:12,motherId:null,birthYear:1996,deathYear:null,isAlive:true,phone:"07701403038",city:"سليمانى",job:"بازركان",notes:"بازركان",photo:""},
+  {id:30,firstName:"كوسار",gender:"Male",fatherId:12,motherId:null,birthYear:1998,deathYear:null,isAlive:true,phone:"07701403313",city:"سليمانى",job:"",notes:"بةريو بةرى سةنتةرى كارةبايى لندن",photo:""},
+  {id:31,firstName:"رابةر",gender:"Male",fatherId:12,motherId:null,birthYear:2002,deathYear:null,isAlive:true,phone:"07701552625",city:"سليمانى",job:"ئةندازيار",notes:"ئةندازيار",photo:""},
+  {id:32,firstName:"هەژین",gender:"Male",fatherId:29,motherId:null,birthYear:2026,deathYear:null,isAlive:true,phone:"",city:"سليمانى",job:"",notes:"",photo:""}
+];
 
-// ==============================
-// Default Members Data (32 members)
-// ==============================
-const DEFAULT_MEMBERS = [{"id":1,"firstName":"مینە سەر فیل","gender":"Male","fatherId":null,"motherId":null,"birthYear":1870,"deathYear":1950,"isAlive":false,"phone":"","city":"گۆخلان","notes":"باپیرە گەورەی بەڕێز مینە سەر فیل، بنچینەی بنەماڵە","photo":""},{"id":2,"firstName":"حسن مينة سةرفيل","gender":"Male","fatherId":1,"motherId":null,"birthYear":1915,"deathYear":1986,"isAlive":false,"phone":"","city":"كوخلان","notes":"كوتال فروش","photo":""},{"id":3,"firstName":"كةرةم مينة سةر فيل","gender":"Male","fatherId":1,"motherId":null,"birthYear":1925,"deathYear":"","isAlive":false,"phone":"","city":"كوخلان","notes":"كامةندى نةخوش خانة","photo":""},{"id":4,"firstName":"حمةرةش","gender":"Male","fatherId":1,"motherId":null,"birthYear":1930,"deathYear":1975,"isAlive":false,"phone":"","city":"ايران / كيكن","notes":"جوتيار","photo":""},{"id":5,"firstName":"حسين مينة سةرفيل","gender":"Male","fatherId":1,"motherId":null,"birthYear":1935,"deathYear":2016,"isAlive":false,"phone":"","city":"كوخلان","notes":"بيشمةركة","photo":""},{"id":6,"firstName":"عبدالله مينة سةرفيل","gender":"Male","fatherId":1,"motherId":null,"birthYear":1939,"deathYear":2018,"isAlive":false,"phone":"","city":"كوخلان","notes":"جوتيار","photo":""},{"id":7,"firstName":"ستجان مينة سةرفيل","gender":"Female","fatherId":1,"motherId":null,"birthYear":1945,"deathYear":1983,"isAlive":false,"phone":"","city":"تةيمةز","notes":"","photo":""},{"id":8,"firstName":"امينة مينة سةرفيل","gender":"Female","fatherId":1,"motherId":null,"birthYear":1948,"deathYear":2012,"isAlive":false,"phone":"","city":"بيستان","notes":"","photo":""},{"id":9,"firstName":"ريحانة مينة سةرفيل","gender":"Female","fatherId":1,"motherId":null,"birthYear":1950,"deathYear":2020,"isAlive":false,"phone":"","city":"شارى بانة","notes":"","photo":""},{"id":10,"firstName":"خليل","gender":"Male","fatherId":6,"motherId":null,"birthYear":"","deathYear":"","isAlive":true,"phone":"","city":"كوخلان","notes":"","photo":""},{"id":11,"firstName":"اسماعيل","gender":"Male","fatherId":6,"motherId":null,"birthYear":"","deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":12,"firstName":"فرهاد","gender":"Male","fatherId":5,"motherId":null,"birthYear":1970,"deathYear":"","isAlive":true,"phone":"07701412135","city":"سليمانى","notes":"","photo":""},{"id":13,"firstName":"زوراب","gender":"Male","fatherId":5,"motherId":null,"birthYear":1978,"deathYear":"","isAlive":true,"phone":"07701451430","city":"كوخلان","notes":"","photo":""},{"id":14,"firstName":"سرحد","gender":"Male","fatherId":5,"motherId":null,"birthYear":1973,"deathYear":"","isAlive":true,"phone":"0772","city":"سليمانى","notes":"","photo":""},{"id":15,"firstName":"شيرين","gender":"Female","fatherId":5,"motherId":null,"birthYear":1972,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":16,"firstName":"خالد","gender":"Male","fatherId":6,"motherId":null,"birthYear":1980,"deathYear":"","isAlive":true,"phone":"07719484112","city":"بينجوين","notes":"كامةندى تةندروستى","photo":""},{"id":17,"firstName":"كةلاويز","gender":"Female","fatherId":6,"motherId":null,"birthYear":1979,"deathYear":"","isAlive":true,"phone":"","city":"بينجوين","notes":"","photo":""},{"id":18,"firstName":"بةيان","gender":"Female","fatherId":6,"motherId":null,"birthYear":1990,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":19,"firstName":"صباحة","gender":"Female","fatherId":null,"motherId":8,"birthYear":1985,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":20,"firstName":"زينب","gender":"Female","fatherId":null,"motherId":9,"birthYear":1970,"deathYear":"","isAlive":true,"phone":"","city":"شارى بانة","notes":"","photo":""},{"id":21,"firstName":"عدنان","gender":"Male","fatherId":null,"motherId":9,"birthYear":1970,"deathYear":"","isAlive":true,"phone":"","city":"شارى بانة","notes":"","photo":""},{"id":22,"firstName":"دلسوز","gender":"Female","fatherId":null,"motherId":9,"birthYear":1980,"deathYear":"","isAlive":true,"phone":"","city":"شارى بانة","notes":"","photo":""},{"id":23,"firstName":"غريب","gender":"Male","fatherId":3,"motherId":null,"birthYear":1960,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":24,"firstName":"توبا","gender":"Female","fatherId":3,"motherId":null,"birthYear":1962,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":25,"firstName":"عبدالله","gender":"Male","fatherId":3,"motherId":null,"birthYear":1964,"deathYear":"","isAlive":true,"phone":"","city":"كوخلان","notes":"","photo":""},{"id":26,"firstName":"على","gender":"Male","fatherId":3,"motherId":null,"birthYear":1968,"deathYear":"","isAlive":true,"phone":"","city":"كوخلان","notes":"","photo":""},{"id":27,"firstName":"عسمان","gender":"Male","fatherId":3,"motherId":null,"birthYear":1970,"deathYear":"","isAlive":true,"phone":"","city":"","notes":"","photo":""},{"id":28,"firstName":"روناك","gender":"Female","fatherId":3,"motherId":null,"birthYear":1970,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""},{"id":29,"firstName":"هيمن","gender":"Male","fatherId":12,"motherId":null,"birthYear":1996,"deathYear":"","isAlive":true,"phone":"07701403038","city":"سليمانى","notes":"بازركان","photo":""},{"id":30,"firstName":"كوسار","gender":"Male","fatherId":12,"motherId":null,"birthYear":1998,"deathYear":"","isAlive":true,"phone":"07701403313","city":"سليمانى","notes":"بةريو بةرى سةنتةرى كارةبايى لندن","photo":""},{"id":31,"firstName":"رابةر","gender":"Male","fatherId":12,"motherId":null,"birthYear":2002,"deathYear":"","isAlive":true,"phone":"07701552625","city":"سليمانى","notes":"ئةندازيار","photo":""},{"id":32,"firstName":"هەژین","gender":"Male","fatherId":29,"motherId":null,"birthYear":2026,"deathYear":"","isAlive":true,"phone":"","city":"سليمانى","notes":"","photo":""}];
+// ─── State ──────────────────────────────────────────────────
+let members=[], activeGen='all', ePhotoData='', aPhotoData='';
+const LS_KEY='mina_family_v5';
 
-// ==============================
-// App State
-// ==============================
-let allMembers = [];
-let currentUser = null;
-let currentFilter = 'all';
-let currentDetailId = null;
-let editPhotoData = '';
-let addPhotoDataVal = '';
-let commentsUnsubscribe = null;
+// ─── Local Storage ──────────────────────────────────────────
+function saveLocal(arr){ try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){} }
+function loadLocal(){ try{const d=localStorage.getItem(LS_KEY);return d?JSON.parse(d):null;}catch(e){return null;} }
 
-// ==============================
-// Auth
-// ==============================
-auth.onAuthStateChanged(user => {
-  currentUser = user;
-  const loginBtn = document.getElementById('loginBtn');
-  const userInfo = document.getElementById('userInfo');
-  const fab = document.getElementById('fabAdd');
-
-  if (user) {
-    loginBtn.style.display = 'none';
-    userInfo.style.display = 'flex';
-    document.getElementById('userAvatar').src = user.photoURL || '';
-    document.getElementById('userName').textContent = user.displayName || user.email;
-    fab.classList.add('show');
-  } else {
-    loginBtn.style.display = 'block';
-    userInfo.style.display = 'none';
-    fab.classList.remove('show');
-  }
-});
-
-function signInWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(e => showToast('کێشەی چوونەژوورەوە: ' + e.message, 'error'));
+// ─── Generation ─────────────────────────────────────────────
+const _gc={};
+function gen(id,vis=new Set()){
+  if(id==null)return 0; if(_gc[id]!==undefined)return _gc[id];
+  if(vis.has(id))return 0; vis.add(id);
+  const m=members.find(x=>x.id==id); if(!m)return 0;
+  const fg=m.fatherId?gen(m.fatherId,new Set(vis)):-1;
+  const mg=m.motherId?gen(m.motherId,new Set(vis)):-1;
+  return (_gc[id]=Math.max(fg,mg)+1);
 }
-function signOut() {
-  auth.signOut().then(() => showToast('دەرچوویت ✓', 'success'));
+function clearGC(){Object.keys(_gc).forEach(k=>delete _gc[k]);}
+
+// ─── Init ────────────────────────────────────────────────────
+function init(){
+  // Try local first
+  const local=loadLocal();
+  if(local&&local.length){ members=local; render(); }
+  else { members=[...SEED]; render(); }
+
+  // Then try Firebase
+  if(!db){setSyncDot(false);return;}
+  db.ref('family/members').once('value')
+    .then(snap=>{
+      if(snap.exists()){
+        const fb=Object.values(snap.val()).sort((a,b)=>a.id-b.id);
+        if(fb.length>=members.length){ members=fb; saveLocal(members); render(); }
+        else{
+          // Firebase empty or less data — upload seed
+          if(fb.length<3){ uploadSeed(); }
+        }
+      } else { uploadSeed(); }
+      setupRealtimeListener();
+    })
+    .catch(()=>{ setSyncDot(false); });
 }
 
-// ==============================
-// Firebase Data
-// ==============================
-function initData() {
-  db.ref('family/members').once('value').then(snap => {
-    if (!snap.exists()) {
-      // Seed default members
-      const obj = {};
-      DEFAULT_MEMBERS.forEach(m => { obj[m.id] = m; });
-      db.ref('family/members').set(obj).then(() => showToast('داتا تۆمارکرا ✓', 'success'));
-    }
+function uploadSeed(){
+  if(!db)return;
+  const obj={};
+  SEED.forEach(m=>{obj[m.id]=m;});
+  db.ref('family/members').set(obj)
+    .then(()=>{toast('داتا تۆمارکرا ✓','ok'); setSyncDot(true);})
+    .catch(()=>setSyncDot(false));
+}
+
+function setupRealtimeListener(){
+  if(!db)return;
+  db.ref('family/members').on('value',snap=>{
+    setSyncDot(true);
+    if(!snap.exists())return;
+    const fb=Object.values(snap.val()).sort((a,b)=>a.id-b.id);
+    members=fb; saveLocal(members); clearGC(); render();
+  },()=>setSyncDot(false));
+}
+
+function setSyncDot(ok){
+  fbOk=ok;
+  document.getElementById('syncDot').className='sync-dot '+(ok?'sync-ok':'sync-off');
+}
+
+// ─── Render ──────────────────────────────────────────────────
+function render(){
+  clearGC();
+  buildFilters();
+  updateStats();
+  doFilter();
+}
+
+function buildFilters(){
+  const gens=[...new Set(members.map(m=>gen(m.id)))].sort((a,b)=>a-b);
+  const c=document.getElementById('filterBtns');
+  c.innerHTML=`<button class="fbtn ${activeGen==='all'?'on':''}" data-g="all" onclick="setGen(this,'all')">هەموو</button>`;
+  gens.forEach(g=>{
+    c.innerHTML+=`<button class="fbtn ${activeGen==g?'on':''}" data-g="${g}" onclick="setGen(this,${g})">نەوەی ${g+1}</button>`;
   });
-
-  // Real-time listener
-  db.ref('family/members').on('value', snap => {
-    if (snap.exists()) {
-      const data = snap.val();
-      allMembers = Object.values(data).sort((a, b) => (a.id || 0) - (b.id || 0));
-    } else {
-      allMembers = [...DEFAULT_MEMBERS];
-    }
-    buildGenFilters();
-    renderStats();
-    filterMembers();
-  });
 }
 
-// ==============================
-// Generation Calc
-// ==============================
-const genCache = {};
-function getGeneration(id, visited = new Set()) {
-  if (id == null) return 0;
-  if (genCache[id] !== undefined) return genCache[id];
-  if (visited.has(id)) return 0;
-  visited.add(id);
-  const m = allMembers.find(x => x.id == id);
-  if (!m) return 0;
-  const fatherGen = m.fatherId ? getGeneration(m.fatherId, new Set(visited)) : -1;
-  const motherGen = m.motherId ? getGeneration(m.motherId, new Set(visited)) : -1;
-  const parentGen = Math.max(fatherGen, motherGen);
-  const g = parentGen + 1;
-  genCache[id] = g;
-  return g;
-}
-function refreshGens() {
-  Object.keys(genCache).forEach(k => delete genCache[k]);
-  allMembers.forEach(m => getGeneration(m.id));
+function setGen(btn,g){ document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); activeGen=g; doFilter(); }
+
+function updateStats(){
+  clearGC();
+  document.getElementById('sTotal').textContent=members.length;
+  document.getElementById('sAlive').textContent=members.filter(m=>m.isAlive).length;
+  document.getElementById('sCities').textContent=new Set(members.map(m=>m.city).filter(Boolean)).size;
+  document.getElementById('sGens').textContent=new Set(members.map(m=>gen(m.id))).size;
 }
 
-// ==============================
-// Filters & Stats
-// ==============================
-function buildGenFilters() {
-  refreshGens();
-  const gens = [...new Set(allMembers.map(m => getGeneration(m.id)))].sort((a,b)=>a-b);
-  const container = document.getElementById('genFilters');
-  container.innerHTML = `<button class="gen-btn ${currentFilter==='all'?'active':''}" data-gen="all" onclick="setGenFilter(this,'all')">هەموو</button>`;
-  gens.forEach(g => {
-    const active = currentFilter == g ? 'active' : '';
-    container.innerHTML += `<button class="gen-btn ${active}" data-gen="${g}" onclick="setGenFilter(this,${g})">نەوەی ${g+1}</button>`;
-  });
+function doFilter(){
+  const q=(document.getElementById('searchQ').value||'').toLowerCase().trim();
+  let list=members;
+  if(activeGen!=='all') list=list.filter(m=>gen(m.id)==activeGen);
+  if(q) list=list.filter(m=>(m.firstName||'').toLowerCase().includes(q)||(m.city||'').toLowerCase().includes(q)||(m.notes||'').toLowerCase().includes(q)||(m.job||'').toLowerCase().includes(q));
+  renderGrid(list);
 }
 
-function setGenFilter(btn, gen) {
-  document.querySelectorAll('.gen-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentFilter = gen;
-  filterMembers();
+function renderGrid(list){
+  const c=document.getElementById('grid');
+  if(!list.length){ c.innerHTML='<div class="empty"><div class="ei">🔍</div><p>هیچ ئەندامێک نەدۆزرایەوە</p></div>'; return; }
+  c.innerHTML=`<div class="grid">${list.map(cardHtml).join('')}</div>`;
 }
 
-function renderStats() {
-  refreshGens();
-  document.getElementById('totalCount').textContent = allMembers.length;
-  document.getElementById('aliveCount').textContent = allMembers.filter(m => m.isAlive).length;
-  const cities = new Set(allMembers.map(m => m.city).filter(Boolean));
-  document.getElementById('cityCount').textContent = cities.size;
-  const gens = new Set(allMembers.map(m => getGeneration(m.id)));
-  document.getElementById('genCount').textContent = gens.size;
-}
+function emo(m){ return m.gender==='Female'?'👩':'👨'; }
 
-function filterMembers() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  let filtered = allMembers;
-  if (currentFilter !== 'all') filtered = filtered.filter(m => getGeneration(m.id) == currentFilter);
-  if (q) filtered = filtered.filter(m => (m.firstName||'').toLowerCase().includes(q) || (m.city||'').toLowerCase().includes(q) || (m.notes||'').toLowerCase().includes(q));
-  renderGrid(filtered);
-}
-
-// ==============================
-// Render Grid
-// ==============================
-function renderGrid(members) {
-  const container = document.getElementById('membersContainer');
-  if (!members.length) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>هیچ ئەندامێک نەدۆزرایەوە</p></div>`;
-    return;
-  }
-  container.innerHTML = `<div class="members-grid">${members.map(m => memberCard(m)).join('')}</div>`;
-}
-
-function memberCard(m) {
-  const gen = getGeneration(m.id);
-  const photoHtml = m.photo
-    ? `<div class="member-photo"><img src="${m.photo}" alt="${m.firstName}" onerror="this.parentElement.innerHTML='${m.gender==='Female'?'👩':'👨'}'"></div>`
-    : `<div class="member-photo">${m.gender==='Female'?'👩':'👨'}</div>`;
-  const years = m.birthYear ? `${m.birthYear}${m.deathYear?' — '+m.deathYear:''}` : '';
-  const badge = m.isAlive
-    ? `<span class="alive-badge alive">زیندوو</span>`
-    : `<span class="alive-badge deceased">مردوو</span>`;
-  return `<div class="member-card" onclick="showDetail(${m.id})">
-    <div class="card-top">
-      ${photoHtml}
-      <div class="member-info">
-        <h3>${m.firstName||''}</h3>
-        <div class="years">${years}</div>
-        ${badge}
-      </div>
+function cardHtml(m){
+  const g=gen(m.id);
+  const yrs=m.birthYear?`${m.birthYear}${m.deathYear?' — '+m.deathYear:''}`:'' ;
+  const av=m.photo?`<div class="avatar"><img src="${m.photo}" onerror="this.parentElement.innerHTML='${emo(m)}'"></div>`:`<div class="avatar">${emo(m)}</div>`;
+  const bdg=m.isAlive?`<span class="badge alive">زیندوو</span>`:`<span class="badge dead">مردوو</span>`;
+  return `<div class="card" onclick="openDet(${m.id})">
+    <div class="card-stripe"></div>
+    <div class="card-body">
+      <div class="card-top">${av}<div class="card-info"><h3>${m.firstName||''}</h3><div class="years">${yrs}</div>${bdg}</div></div>
+      <div class="card-footer"><span class="city">📍 ${m.city||'—'}</span><span class="gen-tag">نەوەی ${g+1}</span></div>
     </div>
-    <div class="card-meta">
-      <span class="card-city">📍 ${m.city||'—'}</span>
-      <span class="gen-badge">نەوەی ${gen+1}</span>
-    </div>
+    <div class="no-photo-edit" title="گۆڕانکاری">✏️</div>
   </div>`;
 }
 
-// ==============================
-// Detail Modal
-// ==============================
-function showDetail(id) {
-  const m = allMembers.find(x => x.id == id);
-  if (!m) return;
-  currentDetailId = id;
-
-  const gen = getGeneration(m.id);
-  const father = m.fatherId ? allMembers.find(x => x.id == m.fatherId) : null;
-  const mother = m.motherId ? allMembers.find(x => x.id == m.motherId) : null;
-  const children = allMembers.filter(x => x.fatherId == id || x.motherId == id);
-
-  const photoHtml = m.photo
-    ? `<div class="detail-photo"><img src="${m.photo}" alt="${m.firstName}" onerror="this.parentElement.innerHTML='${m.gender==='Female'?'👩':'👨'}'"></div>`
-    : `<div class="detail-photo">${m.gender==='Female'?'👩':'👨'}</div>`;
-
-  const editBtn = currentUser
-    ? `<button class="btn btn-primary" onclick="showEditModal(${id})">✏️ گۆڕانکاری</button>`
-    : '';
-
-  const childrenHtml = children.length
-    ? `<div class="children-list"><h4>🧒 منداڵەکان (${children.length})</h4>${children.map(c => `<span class="child-chip" onclick="closeModal('detailModal');setTimeout(()=>showDetail(${c.id}),100)">${c.firstName}</span>`).join('')}</div>`
-    : '';
-
-  document.getElementById('detailModalTitle').textContent = m.firstName;
-  document.getElementById('detailModalBody').innerHTML = `
-    ${photoHtml}
-    <div class="detail-name">${m.firstName}</div>
-    <div class="detail-years">${m.birthYear||'؟'} ${m.deathYear?'— '+m.deathYear:(m.isAlive?'— زیندوو':'')}</div>
+// ─── Detail Modal ────────────────────────────────────────────
+function openDet(id){
+  const m=members.find(x=>x.id==id); if(!m)return;
+  const g=gen(m.id);
+  const father=m.fatherId?members.find(x=>x.id==m.fatherId):null;
+  const mother=m.motherId?members.find(x=>x.id==m.motherId):null;
+  const kids=members.filter(x=>x.fatherId==id||x.motherId==id);
+  const yrs=`${m.birthYear||'؟'} ${m.deathYear?'— '+m.deathYear:(m.isAlive?'— زیندوو':'')}`;
+  const av=m.photo?`<div class="det-photo"><img src="${m.photo}" onerror="this.innerHTML='${emo(m)}'"></div>`:`<div class="det-photo">${emo(m)}</div>`;
+  const kidsHtml=kids.length?`<div class="children-wrap"><h4>🧒 منداڵەکان (${kids.length})</h4>${kids.map(k=>`<span class="child-pill" onclick="closeThenOpen(${k.id})">${k.firstName}</span>`).join('')}</div>`:'';
+  const jobHtml=m.job?`<div class="ibox"><div class="ibox-lbl">💼 کار</div><div class="ibox-val">${m.job}</div></div>`:'';
+  document.getElementById('detTitle').textContent=m.firstName;
+  document.getElementById('detBody').innerHTML=`
+    ${av}
+    <div class="det-name">${m.firstName}</div>
+    <div class="det-sub">${yrs}</div>
     <div class="info-grid">
-      <div class="info-item"><div class="info-label">ڕەگەز</div><div class="info-value">${m.gender==='Female'?'👩 کچ / ژن':'👨 کوڕ / پیاو'}</div></div>
-      <div class="info-item"><div class="info-label">شار</div><div class="info-value">📍 ${m.city||'—'}</div></div>
-      <div class="info-item"><div class="info-label">نەوە</div><div class="info-value">🌿 نەوەی ${gen+1}</div></div>
-      <div class="info-item"><div class="info-label">مۆبایل</div><div class="info-value">${m.phone||'—'}</div></div>
-      ${father?`<div class="info-item"><div class="info-label">باوک</div><div class="info-value"><a onclick="closeModal('detailModal');setTimeout(()=>showDetail(${father.id}),100)">${father.firstName}</a></div></div>`:''}
-      ${mother?`<div class="info-item"><div class="info-label">دایک</div><div class="info-value"><a onclick="closeModal('detailModal');setTimeout(()=>showDetail(${mother.id}),100)">${mother.firstName}</a></div></div>`:''}
+      <div class="ibox"><div class="ibox-lbl">ڕەگەز</div><div class="ibox-val">${m.gender==='Female'?'👩 کچ/ژن':'👨 کوڕ/پیاو'}</div></div>
+      <div class="ibox"><div class="ibox-lbl">📍 شار</div><div class="ibox-val">${m.city||'—'}</div></div>
+      <div class="ibox"><div class="ibox-lbl">🌿 نەوە</div><div class="ibox-val">نەوەی ${g+1}</div></div>
+      <div class="ibox"><div class="ibox-lbl">📞 مۆبایل</div><div class="ibox-val">${m.phone||'—'}</div></div>
+      ${father?`<div class="ibox"><div class="ibox-lbl">باوک</div><div class="ibox-val"><a onclick="closeThenOpen(${father.id})">${father.firstName}</a></div></div>`:''}
+      ${mother?`<div class="ibox"><div class="ibox-lbl">دایک</div><div class="ibox-val"><a onclick="closeThenOpen(${mother.id})">${mother.firstName}</a></div></div>`:''}
+      ${jobHtml}
     </div>
-    ${m.notes?`<div class="notes-box"><div class="info-label">📝 تێبینی</div><div style="margin-top:6px;line-height:1.6">${m.notes}</div></div>`:''}
-    ${childrenHtml}
-    <div class="detail-actions">${editBtn}</div>
-    <div class="comments-section">
-      <h4>💬 کۆمێنتەکان</h4>
-      <div id="commentsList"><div class="no-comments">هیچ کۆمێنتێک نییە</div></div>
-      ${currentUser
-        ? `<div class="comment-form"><textarea id="commentText" placeholder="کۆمێنتت بنووسە..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitComment();}"></textarea><button class="btn btn-primary" onclick="submitComment()">ناردن</button></div>`
-        : `<div class="login-prompt">🔐 چوونەژوورەوە بکە بۆ نووسینی کۆمێنت</div>`
-      }
-    </div>
-  `;
-
-  openModal('detailModal');
-  loadComments(id);
+    ${m.notes?`<div class="notes-card">📝 ${m.notes}</div>`:''}
+    ${kidsHtml}
+    <div class="det-actions">
+      <button class="btn btn-g" style="width:100%" onclick="openEdit(${id})">✏️ گۆڕانکاری / زیادکردنی زانیاری</button>
+    </div>`;
+  openModal('detModal');
 }
 
-// ==============================
-// Comments
-// ==============================
-function loadComments(memberId) {
-  if (commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
-  const ref = db.ref(`family/comments/${memberId}`);
-  const handler = snap => {
-    const list = document.getElementById('commentsList');
-    if (!list) return;
-    if (!snap.exists()) {
-      list.innerHTML = '<div class="no-comments">هیچ کۆمێنتێک نییە — یەکەمین بە!</div>';
-      return;
-    }
-    const comments = Object.entries(snap.val()).map(([k,v])=>({key:k,...v})).sort((a,b)=>a.ts-b.ts);
-    list.innerHTML = comments.map(c => {
-      const time = new Date(c.ts).toLocaleDateString('ar-IQ');
-      const avatar = c.photo
-        ? `<div class="comment-avatar"><img src="${c.photo}" alt=""></div>`
-        : `<div class="comment-avatar">${(c.name||'?')[0]}</div>`;
-      return `<div class="comment-item">${avatar}<div class="comment-bubble"><div class="comment-meta"><span class="comment-name">${c.name||'ناناسراو'}</span><span class="comment-time">${time}</span></div><div class="comment-text">${c.text}</div></div></div>`;
-    }).join('');
-  };
-  ref.on('value', handler);
-  commentsUnsubscribe = () => ref.off('value', handler);
-}
+function closeThenOpen(id){ closeModal('detModal'); setTimeout(()=>openDet(id),150); }
 
-function submitComment() {
-  if (!currentUser) { showToast('تکایە پێشتر چوونەژوورەوە بکە', 'error'); return; }
-  const input = document.getElementById('commentText');
-  const text = (input?.value || '').trim();
-  if (!text) return;
-  const ref = db.ref(`family/comments/${currentDetailId}`).push();
-  ref.set({
-    name: currentUser.displayName || currentUser.email,
-    photo: currentUser.photoURL || '',
-    text,
-    ts: Date.now(),
-    uid: currentUser.uid
-  }).then(() => { input.value = ''; showToast('کۆمێنت نێردرا ✓', 'success'); })
-    .catch(e => showToast('کێشە: ' + e.message, 'error'));
-}
-
-// ==============================
-// Edit Member
-// ==============================
-function showEditModal(id) {
-  const m = allMembers.find(x => x.id == id);
-  if (!m || !currentUser) return;
-  editPhotoData = m.photo || '';
-  document.getElementById('editMemberId').value = id;
-  document.getElementById('editName').value = m.firstName || '';
-  document.getElementById('editBirth').value = m.birthYear || '';
-  document.getElementById('editDeath').value = m.deathYear || '';
-  document.getElementById('editCity').value = m.city || '';
-  document.getElementById('editPhone').value = m.phone || '';
-  document.getElementById('editNotes').value = m.notes || '';
-  setAliveToggle(m.isAlive);
-  const preview = document.getElementById('editPhotoPreview');
-  const placeholder = document.getElementById('editPhotoPlaceholder');
-  if (m.photo) { preview.src = m.photo; preview.style.display = 'block'; placeholder.style.display = 'none'; }
-  else { preview.style.display = 'none'; placeholder.style.display = 'block'; }
-  closeModal('detailModal');
+// ─── Edit Modal ──────────────────────────────────────────────
+function openEdit(id){
+  const m=members.find(x=>x.id==id); if(!m)return;
+  ePhotoData=m.photo||'';
+  document.getElementById('eId').value=id;
+  document.getElementById('eName').value=m.firstName||'';
+  document.getElementById('eBirth').value=m.birthYear||'';
+  document.getElementById('eDeath').value=m.deathYear||'';
+  document.getElementById('eCity').value=m.city||'';
+  document.getElementById('ePhone').value=m.phone||'';
+  document.getElementById('eJob').value=m.job||'';
+  document.getElementById('eNotes').value=m.notes||'';
+  setAlive(m.isAlive);
+  const prev=document.getElementById('ePhotoPreview');
+  const ico=document.getElementById('ePhotoIcon');
+  const hint=document.getElementById('ePhotoHint');
+  if(m.photo){prev.src=m.photo;prev.style.display='block';ico.style.display='none';hint.textContent='✅ وێنە هەیە — کلیک بکە بۆ گۆڕینی';}
+  else{prev.style.display='none';ico.style.display='block';hint.textContent='کلیک بکە بۆ هەڵبژاردنی وێنە';}
+  document.getElementById('editTitle').textContent='✏️ '+m.firstName;
+  closeModal('detModal');
   openModal('editModal');
 }
 
-function setAliveToggle(alive) {
-  document.getElementById('editAliveBtn').classList.toggle('selected', alive);
-  document.getElementById('editDeadBtn').classList.toggle('selected', !alive);
-  document.getElementById('editAliveBtn').dataset.alive = alive ? '1' : '0';
+function setAlive(v){
+  document.getElementById('eAliveBtn').classList.toggle('on',v);
+  document.getElementById('eDeadBtn').classList.toggle('on',!v);
 }
 
-function saveMemberEdit() {
-  if (!currentUser) return;
-  const id = document.getElementById('editMemberId').value;
-  const alive = document.getElementById('editAliveBtn').classList.contains('selected');
-  const updates = {
-    firstName: document.getElementById('editName').value.trim(),
-    birthYear: document.getElementById('editBirth').value || '',
-    deathYear: document.getElementById('editDeath').value || '',
-    isAlive: alive,
-    city: document.getElementById('editCity').value.trim(),
-    phone: document.getElementById('editPhone').value.trim(),
-    notes: document.getElementById('editNotes').value.trim(),
-    photo: editPhotoData,
-    lastEditedBy: currentUser.displayName || currentUser.email,
-    lastEditedAt: Date.now()
+async function saveEdit(){
+  const id=document.getElementById('eId').value;
+  const name=document.getElementById('eName').value.trim();
+  if(!name){toast('ناو داخڵ بکە!','err');return;}
+  const alive=document.getElementById('eAliveBtn').classList.contains('on');
+  const updates={
+    firstName:name,
+    birthYear:document.getElementById('eBirth').value||null,
+    deathYear:document.getElementById('eDeath').value||null,
+    isAlive:alive, city:document.getElementById('eCity').value.trim(),
+    phone:document.getElementById('ePhone').value.trim(),
+    job:document.getElementById('eJob').value.trim(),
+    notes:document.getElementById('eNotes').value.trim(),
+    photo:ePhotoData, updatedAt:Date.now()
   };
-  if (!updates.firstName) { showToast('ناو داخڵ بکە!', 'error'); return; }
-  db.ref(`family/members/${id}`).update(updates)
-    .then(() => { showToast('تۆمارکرا ✓', 'success'); closeModal('editModal'); })
-    .catch(e => showToast('کێشە: ' + e.message, 'error'));
+  // Update local
+  const idx=members.findIndex(m=>m.id==id);
+  if(idx>-1){ members[idx]={...members[idx],...updates}; saveLocal(members); clearGC(); render(); }
+  closeModal('editModal');
+  toast('تۆمارکرا ✓','ok');
+  // Firebase
+  if(db){ db.ref(`family/members/${id}`).update(updates).catch(e=>toast('کێشەی ئینتەرنێت: '+e.code,'err')); }
 }
 
-// ==============================
-// Add Member
-// ==============================
-function showAddModal() {
-  if (!currentUser) { showToast('تکایە پێشتر چوونەژوورەوە بکە', 'error'); return; }
-  document.getElementById('addName').value = '';
-  document.getElementById('addBirth').value = '';
-  document.getElementById('addCity').value = '';
-  document.getElementById('addNotes').value = '';
-  document.getElementById('addGender').value = 'Male';
-  document.getElementById('addMaleBtn').classList.add('selected');
-  document.getElementById('addFemaleBtn').classList.remove('selected');
-  addPhotoDataVal = '';
-  document.getElementById('addPhotoPreview').style.display = 'none';
-  document.getElementById('addPhotoPlaceholder').style.display = 'block';
-
-  // Populate parent dropdowns
-  const males = allMembers.filter(m => m.gender === 'Male').sort((a,b) => (a.firstName||'').localeCompare(b.firstName||''));
-  const females = allMembers.filter(m => m.gender === 'Female').sort((a,b) => (a.firstName||'').localeCompare(b.firstName||''));
-  document.getElementById('addFatherId').innerHTML = '<option value="">— باوک هەڵبژێرە —</option>' + males.map(m => `<option value="${m.id}">${m.firstName}</option>`).join('');
-  document.getElementById('addMotherId').innerHTML = '<option value="">— دایک هەڵبژێرە —</option>' + females.map(m => `<option value="${m.id}">${m.firstName}</option>`).join('');
-
+// ─── Add Modal ───────────────────────────────────────────────
+function openAdd(){
+  aPhotoData='';
+  ['aName','aBirth','aCity','aPhone','aJob','aNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('aGender').value='Male';
+  document.getElementById('aMaleBtn').classList.add('on');
+  document.getElementById('aFemaleBtn').classList.remove('on');
+  document.getElementById('aPhotoPreview').style.display='none';
+  document.getElementById('aPhotoIcon').style.display='block';
+  const males=members.filter(m=>m.gender==='Male').sort((a,b)=>(a.firstName||'').localeCompare(b.firstName||''));
+  const females=members.filter(m=>m.gender==='Female').sort((a,b)=>(a.firstName||'').localeCompare(b.firstName||''));
+  document.getElementById('aFather').innerHTML='<option value="">— باوک هەڵبژێرە —</option>'+males.map(m=>`<option value="${m.id}">${m.firstName}</option>`).join('');
+  document.getElementById('aMother').innerHTML='<option value="">— دایک هەڵبژێرە —</option>'+females.map(m=>`<option value="${m.id}">${m.firstName}</option>`).join('');
   openModal('addModal');
 }
 
-function setGenderToggle(g) {
-  document.getElementById('addGender').value = g;
-  document.getElementById('addMaleBtn').classList.toggle('selected', g === 'Male');
-  document.getElementById('addFemaleBtn').classList.toggle('selected', g === 'Female');
+function setGender(g){
+  document.getElementById('aGender').value=g;
+  document.getElementById('aMaleBtn').classList.toggle('on',g==='Male');
+  document.getElementById('aFemaleBtn').classList.toggle('on',g==='Female');
 }
 
-function saveNewMember() {
-  if (!currentUser) return;
-  const name = document.getElementById('addName').value.trim();
-  if (!name) { showToast('ناو پێویستە!', 'error'); return; }
-  const maxId = Math.max(...allMembers.map(m => m.id || 0), 0);
-  const newId = maxId + 1;
-  const fatherId = document.getElementById('addFatherId').value ? parseInt(document.getElementById('addFatherId').value) : null;
-  const motherId = document.getElementById('addMotherId').value ? parseInt(document.getElementById('addMotherId').value) : null;
-  const member = {
-    id: newId,
-    firstName: name,
-    gender: document.getElementById('addGender').value,
-    fatherId,
-    motherId,
-    birthYear: document.getElementById('addBirth').value || '',
-    deathYear: '',
-    isAlive: true,
-    city: document.getElementById('addCity').value.trim(),
-    phone: '',
-    notes: document.getElementById('addNotes').value.trim(),
-    photo: addPhotoDataVal,
-    addedBy: currentUser.displayName || currentUser.email,
-    addedAt: Date.now()
+async function saveAdd(){
+  const name=document.getElementById('aName').value.trim();
+  if(!name){toast('ناو پێویستە!','err');return;}
+  const maxId=Math.max(...members.map(m=>m.id||0),0);
+  const newId=maxId+1;
+  const fid=document.getElementById('aFather').value;
+  const mid=document.getElementById('aMother').value;
+  const m={
+    id:newId, firstName:name,
+    gender:document.getElementById('aGender').value,
+    fatherId:fid?parseInt(fid):null, motherId:mid?parseInt(mid):null,
+    birthYear:document.getElementById('aBirth').value||null,
+    deathYear:null, isAlive:true,
+    city:document.getElementById('aCity').value.trim(),
+    phone:document.getElementById('aPhone').value.trim(),
+    job:document.getElementById('aJob').value.trim(),
+    notes:document.getElementById('aNotes').value.trim(),
+    photo:aPhotoData, addedAt:Date.now()
   };
-  db.ref(`family/members/${newId}`).set(member)
-    .then(() => { showToast(`${name} زیادکرا ✓`, 'success'); closeModal('addModal'); })
-    .catch(e => showToast('کێشە: ' + e.message, 'error'));
+  members.push(m); saveLocal(members); clearGC(); render();
+  closeModal('addModal');
+  toast(`${name} زیادکرا ✓`,'ok');
+  if(db){ db.ref(`family/members/${newId}`).set(m).catch(e=>toast('کێشەی ئینتەرنێت','err')); }
 }
 
-// ==============================
-// Photo Upload
-// ==============================
-function previewPhoto(mode) {
-  const input = document.getElementById(mode + 'PhotoInput');
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const data = e.target.result;
-    if (mode === 'edit') {
-      editPhotoData = data;
-      document.getElementById('editPhotoPreview').src = data;
-      document.getElementById('editPhotoPreview').style.display = 'block';
-      document.getElementById('editPhotoPlaceholder').style.display = 'none';
-    } else {
-      addPhotoDataVal = data;
-      document.getElementById('addPhotoPreview').src = data;
-      document.getElementById('addPhotoPreview').style.display = 'block';
-      document.getElementById('addPhotoPlaceholder').style.display = 'none';
-    }
+// ─── Photo Upload ────────────────────────────────────────────
+function loadPhoto(prefix){
+  const file=document.getElementById(prefix+'PhotoFile').files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const max=500; let w=img.width,h=img.height;
+      if(w>h){if(w>max){h*=max/w;w=max;}}else{if(h>max){w*=max/h;h=max;}}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const data=canvas.toDataURL('image/jpeg',0.8);
+      if(prefix==='e'){
+        ePhotoData=data;
+        document.getElementById('ePhotoPreview').src=data;
+        document.getElementById('ePhotoPreview').style.display='block';
+        document.getElementById('ePhotoIcon').style.display='none';
+        document.getElementById('ePhotoHint').textContent='✅ وێنە هەڵبژێردرا';
+      } else {
+        aPhotoData=data;
+        document.getElementById('aPhotoPreview').src=data;
+        document.getElementById('aPhotoPreview').style.display='block';
+        document.getElementById('aPhotoIcon').style.display='none';
+      }
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// ==============================
-// Modal Helpers
-// ==============================
-function openModal(id) {
-  document.getElementById(id).classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
-  document.body.style.overflow = '';
-  if (id === 'detailModal' && commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
-}
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
-});
+// ─── Modal Helpers ────────────────────────────────────────────
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
 
-// ==============================
-// Toast
-// ==============================
-function showToast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.textContent = msg;
-  document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+// ─── Toast ────────────────────────────────────────────────────
+let _tt;
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=type; t.style.display='block';
+  clearTimeout(_tt); _tt=setTimeout(()=>t.style.display='none',3000);
 }
 
-// ==============================
-// Init
-// ==============================
-initData();
+// ─── Start ────────────────────────────────────────────────────
+init();
 </script>
 </body>
 </html>
