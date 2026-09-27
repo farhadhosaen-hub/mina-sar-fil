@@ -4034,7 +4034,17 @@
            بەڕێوەبەری ئەدمین، پەسەندکردنی گۆڕانکاری و گەڕاندنەوە بۆ دۆخی سەرەتا
            ========================================================================= */
         const ADMIN_STORAGE_KEY = 'mina_sar_fil_admin_logged_in_v1';
+        
         const ADMIN_PIN = '1234';
+
+        // قوفڵکردنی سەرجەم گۆڕانکارییەکان تا ئەدمین لۆگین دەبێت
+        function requireAdminAuth(actionDesc = 'ئەم کردارە') {
+            if (isAdminLoggedIn) return true;
+            showCloudToast('🔒 ' + actionDesc + ' قوفڵە! تەنها بۆ حاجی فەرهاد (ئەدمین) ڕێگەپێدراوە.');
+            handleAdminHeaderClick();
+            return false;
+        }
+
         let isAdminLoggedIn = false;
         let pendingRequestsList = [];
 
@@ -4674,26 +4684,9 @@
             }
 
             
-            // ئەگەر ئەدمین نەبێت، بینێرە بۆ چاوەڕوانی و پەسەندکردن
+            // قوفڵکردنی تەواو: ئەگەر ئەدمین نەبێت هیچ گۆڕانکارییەک خەزن نابێت
             if (!isAdminLoggedIn) {
-                const reqId = 'req_' + Date.now();
-                if (window.firebase && firebaseDbInstance) {
-                    firebaseDbInstance.ref('mina_family_data/pending_requests/' + reqId).set({
-                        id: reqId,
-                        type: isEdit ? 'edit' : 'add',
-                        targetMemberId: isEdit ? id : null,
-                        data: memberData,
-                        submittedAt: Date.now()
-                    }).then(() => {
-                        closeModal('memberModalOverlay');
-                        alert('✅ دەستت خۆش! زانیارییەکانت بە سەرکەوتوویی نێردران بۆ حاجی فەرهاد (ئەدمین) بۆ پەسەندکردن.\n\nپاش تاوتوێکردن و پەسەندکردنی، لەسەر شەجەرەکە دەردەکەوێت.');
-                    }).catch(err => {
-                        console.error('Pending submit error:', err);
-                        alert('کێشەیەک ڕوویدا لە کاتی ناردن. تکایە هێڵی ئینتەرنێتەکەت بپشکنە.');
-                    });
-                } else {
-                    alert('⚠️ هێڵی ئینتەرنێت پەیوەست نییە؛ ناتوانرێت داواکاری بنێردرێت.');
-                }
+                requireAdminAuth('تۆمارکردن و خەزنکردنی گۆڕانکاری');
                 return;
             }
 
@@ -5359,6 +5352,11 @@ function handleIncomingRemoteMembers(remoteMembers) {
                 e.stopPropagation();
                 if (e.preventDefault) e.preventDefault();
             }
+            if (!requireAdminAuth('گۆڕینی وێنەی ئەندام')) return;
+            if (e) {
+                e.stopPropagation();
+                if (e.preventDefault) e.preventDefault();
+            }
             currentPhotoMemberId = memberId;
             const input = ensurePhotoInput();
             input.value = '';
@@ -5971,6 +5969,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
         }
 
         function openAddModal() {
+            if (!requireAdminAuth('زیادکردنی ئەندامی نوێ')) return;
             document.getElementById('modalTitle').textContent = 'زیادکردنی ئەندامی نوێ';
             document.getElementById('memberForm').reset();
             document.getElementById('memberId').value = '';
@@ -5986,6 +5985,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
         }
 
         function openAddChildModal(parentId, parentGender) {
+            if (!requireAdminAuth('زیادکردنی منداڵ')) return;
             openAddModal();
             const parent = members.find(m => m.id === parentId);
             if (!parent) return;
@@ -6016,6 +6016,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
         }
 
         function openEditModal(id) {
+            if (!requireAdminAuth('دەستکاریکردنی زانیاریی ئەندام')) return;
             const m = members.find(item => item.id === id);
             if (!m) return;
             document.getElementById('modalTitle').textContent = `دەستکاریکردنی: ${m.firstName}`;
@@ -6089,6 +6090,7 @@ function handleIncomingRemoteMembers(remoteMembers) {
         }
 
         function confirmDeleteMember(id) {
+            if (!requireAdminAuth('سڕینەوەی ئەندام')) return;
             if (!isAdminLoggedIn) {
                 alert('⚠️ تەنها حاجی فەرهاد (ئەدمین) دەسەڵاتی سڕینەوەی ئەندامانی هەیە!');
                 return;
