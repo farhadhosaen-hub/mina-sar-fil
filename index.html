@@ -3771,8 +3771,15 @@
                     
                     membersRef.on('value', (snapshot) => {
                         const remoteData = snapshot.val();
+                        // Handle both array format and object format (m1, m2... keys)
+                        let remoteArr = null;
                         if (remoteData && Array.isArray(remoteData) && remoteData.length > 0) {
-                            handleIncomingRemoteMembers(remoteData);
+                            remoteArr = remoteData.filter(m => m); // remove nulls
+                        } else if (remoteData && !Array.isArray(remoteData) && typeof remoteData === 'object' && Object.keys(remoteData).length > 0) {
+                            remoteArr = Object.values(remoteData).filter(m => m && typeof m === 'object');
+                        }
+                        if (remoteArr && remoteArr.length > 0) {
+                            handleIncomingRemoteMembers(remoteArr);
                         } else if (!remoteData && members && members.length > 0) {
                             pushMembersToCloud(true);
                         }
