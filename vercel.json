@@ -1,8 +1,4 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/wenekanm", "destination": "/wenekanm.html" },
-    { "source": "/photos", "destination": "/wenekanm.html" }
-  ]
+  "cleanUrls": false,
+  "trailingSlash": false
 }
