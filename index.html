@@ -2327,6 +2327,135 @@
             cursor: default !important;
         }
 
+
+        /* =========================================================================
+           تۆڕی نەوەکان لە یەک شاشەدا (One-Screen Generation System)
+           ========================================================================= */
+        .one-screen-gen-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.6rem;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .one-screen-gen-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem !important;
+            }
+        }
+
+        .one-screen-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.65rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            min-height: 105px;
+        }
+
+        .one-screen-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
+        }
+
+        .one-screen-card.male {
+            border-top: 4px solid #2563eb;
+            border-color: #bfdbfe;
+            background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+        }
+
+        .one-screen-card.female {
+            border-top: 4px solid #db2777;
+            border-color: #fbcfe8;
+            background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%);
+        }
+
+        .one-screen-card-top {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .one-screen-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .one-screen-avatar-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .one-screen-name {
+            font-weight: 800;
+            font-size: 0.92rem;
+            color: #0f172a;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .one-screen-meta {
+            font-size: 0.74rem;
+            color: #64748b;
+            margin-top: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .one-screen-btn {
+            width: 100%;
+            margin-top: 0.45rem;
+            padding: 0.35rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.78rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            transition: all 0.2s;
+        }
+
+        .one-screen-btn.has-kids {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+        }
+
+        .one-screen-btn.has-kids:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            transform: translateY(-1px);
+        }
+
+        .one-screen-btn.no-kids {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: default;
+        }
+
 </style>
     <!-- Google Firebase Realtime Database SDK (بۆ هاوکاتکردنی ڕاستەوخۆی مۆبایل ⇆ کۆمپیوتەر) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2448,59 +2577,35 @@
     </section>
 
     <!-- لاپەڕەی نوێ و تایبەت: تەنها کوڕ و کچەکانی مینە سەر فیل -->
-    <section id="minaChildrenPage" class="mina-children-section" style="display: none; max-width: 1400px; margin: 0.85rem auto 2.5rem auto; padding: 0 1rem; width: 100%;">
-        <!-- سەرپەڕەی یەکگرتوو و کەم جێگەگری کوڕ و کچەکان -->
-        <div class="children-page-toolbar">
-            <!-- لای ڕاست: گەڕانەوە + ناونیشان و کۆی گشتی -->
-            <div class="toolbar-brand-group">
-                <button type="button" class="btn-return-to-first-page" onclick="returnToHeroPage()" title="گەڕانەوە بۆ لاپەڕەی یەکەم (مینە سەر فیل)">
-                    <span style="font-size: 1.25rem;">⬅️</span>
-                    <span>گەڕانەوە بۆ لاپەڕەی یەکەم (مینە سەر فیل)</span>
-                </button>
-                <div class="toolbar-title-wrap">
-                    <h2 class="toolbar-title">
-                        <span>👨‍👩‍👧‍👦</span>
-                        <span>کوڕ و کچەکانی مینە سەر فیل</span>
+    <section id="minaChildrenPage" class="mina-children-section" style="display: none; max-width: 1300px; margin: 0.6rem auto 1.5rem auto; padding: 0 0.8rem; width: 100%;">
+        <!-- سەردێڕی یەکگرتوو و کەم جێگەگری نەوەکان لە یەک شاشەدا -->
+        <div style="background: white; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 0.6rem 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 0.6rem;">
+            <!-- بەشی سەرەوە: دوگمەی گەڕانەوە + ناوی نەوە + کۆی گشتی -->
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                    <button type="button" id="genBackBtn" onclick="navigateGenerationBack()" class="btn btn-secondary" style="font-weight: 800; font-size: 0.84rem; padding: 0.4rem 0.85rem; border-radius: 10px; display: inline-flex; align-items: center; gap: 0.35rem; background: #f8fafc; border: 1.5px solid #cbd5e1; cursor: pointer; color: #1e293b; transition: all 0.2s;">
+                        <span>⬅️</span> <span id="genBackLabel">لاپەڕەی سەرەکی</span>
+                    </button>
+                    <h2 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <span id="genTitleIcon">👨‍👩‍👧‍👦</span> <span id="genTitleText">نەوەی یەکەم (کوڕ و کچەکانی مینە سەر فیل)</span>
                     </h2>
-                    <span id="minaChildrenSummaryBadge" class="toolbar-count-badge">کۆی گشتی: ...</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span id="genCountBadge" style="background: #e0f2fe; color: #0369a1; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 800; font-size: 0.82rem; border: 1px solid #bae6fd;">٨ کەس</span>
+                    <button type="button" onclick="switchToFullTree()" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 8px; cursor: pointer; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155;" title="پیشاندانی تەواوی درەخت">
+                        <span>🌳</span> درەختی تەواو
+                    </button>
                 </div>
             </div>
 
-            <!-- ناوەڕاست: شێوازی پیشاندان (View Modes) -->
-            <div class="toolbar-view-modes">
-                <button type="button" class="btn-view-mode active" id="btnViewCompact" onclick="setMinaChildrenViewMode('compact')" title="پیشاندانی هەموویان لە یەک لاپەڕەدا بە کارتی کۆکراوە">
-                    <span>🔲</span> یەک لاپەڕە
-                </button>
-                <button type="button" class="btn-view-mode" id="btnViewTable" onclick="setMinaChildrenViewMode('table')" title="پیشاندانی هەموویان وەک خشتەیەکی ڕێکخراو لە یەک لاپەڕەدا">
-                    <span>📋</span> خشتە
-                </button>
-                <button type="button" class="btn-view-mode" id="btnViewDetailed" onclick="setMinaChildrenViewMode('detailed')" title="پیشاندانی کارتی گەورە">
-                    <span>🖼️</span> کارتی گەورە
-                </button>
-            </div>
-
-            <!-- لای چەپ: فلتەری کوڕ/کچ + گەڕان + زیادکردن -->
-            <div class="toolbar-actions-group">
-                <div class="toolbar-gender-filters">
-                    <button type="button" class="btn-filter-child active" id="btnFilterAll" onclick="filterMinaChildren('all')">هەموو</button>
-                    <button type="button" class="btn-filter-child" id="btnFilterMale" onclick="filterMinaChildren('Male')">👨 کوڕ</button>
-                    <button type="button" class="btn-filter-child" id="btnFilterFemale" onclick="filterMinaChildren('Female')">👩 کچ</button>
-                </div>
-                <div class="toolbar-search-box">
-                    <input type="text" id="minaChildrenSearchInput" oninput="onMinaChildrenSearch(this.value)" placeholder="🔍 گەڕان بەپێی ناو، دایک، شار...">
-                </div>
-                <button type="button" class="btn-add-child-quick" onclick="openAddMinaChildModal()" title="زیادکردنی کوڕ یان کچی نوێ">
-                    <span>➕</span> زیادکردن
-                </button>
-                <button type="button" class="btn-tree-quick" onclick="switchToFullTree()" title="بینین لەسەر درەخت">
-                    <span>🌳</span> درەخت
-                </button>
+            <!-- هێڵی ڕێڕەو (Breadcrumbs) بۆ ئاسانکاری گەیشتن بە هەر نەوەیەک -->
+            <div id="genBreadcrumbs" style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: #64748b; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid #f1f5f9; overflow-x: auto; white-space: nowrap;">
+                <!-- Breadcrumbs will be populated here -->
             </div>
         </div>
 
-        <!-- ناوەڕۆکی کوڕ و کچەکان: تۆڕی کارتی کۆکراوە لە یەک لاپەڕەدا -->
-        <div id="minaChildrenGrid" class="mina-children-grid compact-grid">
-            <!-- کارتی کوڕ و کچەکان بە شێوەی دینامیکی لێرە دروست دەکرێن -->
+        <div id="minaChildrenGrid" class="one-screen-gen-grid">
+            <!-- کارتی نەوەکان لەم تۆڕەدا دروست دەکرێن -->
         </div>
     </section>
 
@@ -6185,39 +6290,225 @@ function handleIncomingRemoteMembers(remoteMembers) {
         let currentMinaChildrenSearch = '';
 
         // کردنەوەی لاپەڕەی تایبەت و نوێ: تەنها کوڕ و کچەکانی مینە سەر فیل بە شێوازی درەخت
+        
+        /* =========================================================================
+           سیستەمی پیشاندانی نەوەکان لە یەک شاشەدا (One-Screen Generation Navigator)
+           ========================================================================= */
+        let currentGenMemberId = 1;
+        let genNavStack = [];
+
         function showMinaChildrenOnly() {
+            genNavStack = [];
+            const root = getPatriarch();
+            const rootId = root ? root.id : 1;
+            viewGenerationPage(rootId);
+        }
+
+        function getGenDepth(mId) {
+            let depth = 0;
+            let curr = members.find(m => m.id === mId);
+            while (curr && (curr.fatherId || curr.motherId) && depth < 10) {
+                curr = members.find(m => m.id === (curr.fatherId || curr.motherId));
+                depth++;
+            }
+            return depth;
+        }
+
+        function getKurdishGenTitle(depth, parentName) {
+            switch(depth) {
+                case 1:
+                    return { icon: '👨‍👩‍👧‍👦', title: 'نەوەی یەکەم (کوڕ و کچەکانی مینە سەر فیل)' };
+                case 2:
+                    return { icon: '👶', title: 'نەوەی دووەم (نەوەکانی ' + parentName + ')' };
+                case 3:
+                    return { icon: '🌱', title: 'نەوەی سێیەم (نەوتەکانی ' + parentName + ')' };
+                case 4:
+                    return { icon: '🌿', title: 'نەوەی چوارەم (نەبیرەکانی ' + parentName + ')' };
+                default:
+                    return { icon: '👥', title: 'نەوەی ' + depth + ' (نەوەکانی ' + parentName + ')' };
+            }
+        }
+
+        function renderGenBreadcrumbs(memberId) {
+            const bcContainer = document.getElementById('genBreadcrumbs');
+            if (!bcContainer) return;
+
+            const root = getPatriarch();
+            const rootId = root ? root.id : 1;
+
+            if (memberId === rootId) {
+                bcContainer.innerHTML = '<span style="font-weight: 800; color: #0284c7;">🌳 مینە سەر فیل</span> <span style="color: #94a3b8;">/</span> <span style="color: #334155; font-weight: 700;">نەوەی یەکەم (٨ منداڵ)</span>';
+                return;
+            }
+
+            // Build lineage from memberId up to root
+            let trail = [];
+            let curr = members.find(m => m.id === memberId);
+            while (curr) {
+                trail.unshift(curr);
+                if (curr.id === rootId) break;
+                curr = members.find(m => m.id === (curr.fatherId || curr.motherId));
+            }
+
+            let htmlArr = [
+                '<span onclick="showMinaChildrenOnly()" style="cursor: pointer; font-weight: 700; color: #0284c7;" title="گەڕانەوە بۆ نەوەی یەکەم">🌳 مینە سەر فیل</span>'
+            ];
+
+            for (let i = 0; i < trail.length; i++) {
+                const item = trail[i];
+                if (item.id === rootId) continue;
+                const isLast = (i === trail.length - 1);
+                if (isLast) {
+                    htmlArr.push('<span style="color: #94a3b8;">/</span>');
+                    htmlArr.push('<span style="font-weight: 800; color: #0f172a;">نەوەکانی ' + item.firstName + '</span>');
+                } else {
+                    htmlArr.push('<span style="color: #94a3b8;">/</span>');
+                    htmlArr.push('<span onclick="jumpToGeneration(' + item.id + ')" style="cursor: pointer; color: #0284c7; font-weight: 700;">' + item.firstName + '</span>');
+                }
+            }
+
+            bcContainer.innerHTML = htmlArr.join(' ');
+        }
+
+        function jumpToGeneration(targetId) {
+            const targetIdx = genNavStack.indexOf(targetId);
+            if (targetIdx !== -1) {
+                genNavStack = genNavStack.slice(0, targetIdx);
+            }
+            viewGenerationPage(targetId);
+        }
+
+        function viewGenerationPage(memberId) {
             stopElderMinaVoice();
 
             const heroEl = document.getElementById('heroSection');
             if (heroEl) heroEl.style.display = 'none';
 
-            const childrenPage = document.getElementById('minaChildrenPage');
-            if (childrenPage) childrenPage.style.display = 'none';
+            const treePage = document.getElementById('treePageSection');
+            if (treePage) treePage.style.display = 'none';
+
+            const treeEl = document.getElementById('treeContainer');
+            if (treeEl) treeEl.style.display = 'none';
+
+            const zoomEl = document.getElementById('zoomControls');
+            if (zoomEl) zoomEl.style.display = 'none';
 
             const regEl = document.getElementById('registryTab');
             if (regEl) regEl.style.display = 'none';
 
-            const treePage = document.getElementById('treePageSection');
-            if (treePage) treePage.style.display = 'block';
+            const pageEl = document.getElementById('minaChildrenPage');
+            if (!pageEl) return;
+            pageEl.style.display = 'block';
 
-            const treeEl = document.getElementById('treeContainer');
-            if (treeEl) treeEl.style.display = 'flex';
+            currentGenMemberId = Number(memberId);
 
-            const zoomEl = document.getElementById('zoomControls');
-            if (zoomEl) zoomEl.style.display = 'flex';
+            const root = getPatriarch();
+            const rootId = root ? root.id : 1;
+            const isRoot = (currentGenMemberId === rootId);
 
-            // سەرەتا نەوەکانی کوڕ و کچەکان داخراون - تەنها مینە سەر فیل و کوڕ و کچەکانی دیار دەبن
-            treeStepHistory = [];
-            expandedMemberIds.clear();
-            expandAllTreeMode = false;
+            const parentMember = members.find(m => m.id === currentGenMemberId) || root;
+            const children = members.filter(c => c.fatherId === currentGenMemberId || c.motherId === currentGenMemberId);
 
-            renderTree();
-            updateStepReturnButton();
-            setTimeout(fitTreeToScreen, 120);
+            // Compute depth
+            const parentDepth = getGenDepth(currentGenMemberId);
+            const genInfo = getKurdishGenTitle(parentDepth + 1, parentMember ? parentMember.firstName : 'ئەندام');
+
+            // Update title, icons and count
+            const titleEl = document.getElementById('genTitleText');
+            const iconEl = document.getElementById('genTitleIcon');
+            const backLabel = document.getElementById('genBackLabel');
+            const countBadge = document.getElementById('genCountBadge');
+
+            if (titleEl) titleEl.textContent = genInfo.title;
+            if (iconEl) iconEl.textContent = genInfo.icon;
+            if (countBadge) countBadge.textContent = children.length + ' کەس';
+
+            // Smart Back button label
+            if (isRoot || genNavStack.length === 0) {
+                if (backLabel) backLabel.textContent = 'لاپەڕەی سەرەکی (مینە سەر فیل)';
+            } else {
+                const prevId = genNavStack[genNavStack.length - 1];
+                if (prevId === rootId) {
+                    if (backLabel) backLabel.textContent = 'گەڕانەوە بۆ نەوەی یەکەم';
+                } else {
+                    const prevMember = members.find(m => m.id === prevId);
+                    if (backLabel) backLabel.textContent = 'گەڕانەوە بۆ ' + (prevMember ? prevMember.firstName : 'نەوەی پێشوو');
+                }
+            }
+
+            // Render breadcrumbs
+            renderGenBreadcrumbs(currentGenMemberId);
+
+            const grid = document.getElementById('minaChildrenGrid');
+            if (!grid) return;
+
+            grid.className = 'one-screen-gen-grid';
+
+            if (children.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; background: white; border-radius: 16px; border: 2px dashed #cbd5e1; color: #64748b;">
+                        <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">👶</div>
+                        <h3 style="color: #1e293b; font-size: 1.05rem; margin-bottom: 0.3rem;">هیچ منداڵێک بۆ (${parentMember ? parentMember.firstName : ''}) تۆمار نەکراوە</h3>
+                        <p style="font-size: 0.82rem; color: #94a3b8; margin: 0;">ئەم بەڕێزە نەوەی تۆمارکراوی نییە لە خێزاننامەکەدا.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = children.map(child => {
+                const isMale = child.gender === 'Male';
+                const isAlive = child.isAlive !== false;
+                const subKids = members.filter(k => k.fatherId === child.id || k.motherId === child.id);
+                const hasKids = subKids.length > 0;
+                const photoSrc = child.photo;
+
+                return `
+                    <div class="one-screen-card ${isMale ? 'male' : 'female'}" id="gen-card-${child.id}">
+                        <div class="one-screen-card-top" onclick="showMemberDetails(${child.id})" style="cursor: pointer;" title="کلیک بکە بۆ بینینی تەواوی زانیارییەکانی ${child.firstName}">
+                            ${photoSrc 
+                                ? `<img src="${photoSrc}" class="one-screen-avatar" alt="${child.firstName}">` 
+                                : `<div class="one-screen-avatar-placeholder">${isMale ? '👨' : '👩'}</div>`
+                            }
+                            <div style="overflow: hidden; flex: 1;">
+                                <div class="one-screen-name" title="${child.firstName}">${child.firstName}</div>
+                                <div class="one-screen-meta">
+                                    <span>${isMale ? 'کوڕ' : 'کچ'}</span>
+                                    <span>•</span>
+                                    <span>${child.birthYear ? child.birthYear + ' ز' : ''}</span>
+                                    <span>${isAlive ? '🟢' : '🕊️'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${child.motherName ? `<div style="font-size: 0.72rem; color: #be185d; margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="دایک: ${child.motherName}">🌸 دایک: ${child.motherName}</div>` : ''}
+
+                        ${hasKids 
+                            ? `<button type="button" class="one-screen-btn has-kids" onclick="navigateToSubGeneration(${child.id})">
+                                   <span>👶 نەوەکانی (${subKids.length})</span> <span>⬅️</span>
+                               </button>`
+                            : `<div class="one-screen-btn no-kids"><span>👶</span> <span>بێ منداڵ</span></div>`
+                        }
+                    </div>
+                `;
+            }).join('');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // گەڕانەوە بۆ لاپەڕەی یەکەم (کارتی شکۆمەندی مینە سەر فیل)
+        function navigateToSubGeneration(childId) {
+            genNavStack.push(currentGenMemberId);
+            viewGenerationPage(childId);
+        }
+
+        function navigateGenerationBack() {
+            if (genNavStack.length > 0) {
+                const prevId = genNavStack.pop();
+                viewGenerationPage(prevId);
+            } else {
+                returnToHeroPage();
+            }
+        }
+
         function returnToHeroPage() {
             stopElderMinaVoice();
 
