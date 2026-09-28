@@ -1,4 +1,11 @@
 {
-  "cleanUrls": false,
-  "trailingSlash": false
+  "routes": [
+    { "src": "/wenekanm", "dest": "/wenekanm.html" },
+    { "src": "/wenekanm.html", "dest": "/wenekanm.html" },
+    { "src": "/photos", "dest": "/photos.html" },
+    { "src": "/photos.html", "dest": "/photos.html" },
+    { "src": "/update", "dest": "/update.html" },
+    { "src": "/update.html", "dest": "/update.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }
